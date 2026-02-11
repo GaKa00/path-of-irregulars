@@ -16,9 +16,15 @@ export interface RegisterResponse {
 }
 
 export async function loginRequest(request: AuthRequest): Promise<LoginResponse> {
-    const response = await fetch("http://localhost:7197/auth/login", {
+    const response = await fetch("https://localhost:7197/auth/login", {
         method: "POST",
-        body: JSON.stringify(request),
+         headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username: request.username,
+            password: request.password,
+        }),
     });
 
     if (!response.ok) {
@@ -34,9 +40,16 @@ export async function loginRequest(request: AuthRequest): Promise<LoginResponse>
 }
 
 export async function registerUser(request: AuthRequest): Promise<RegisterResponse> {
-    const response = await fetch("http://localhost:7197/auth/register", {
-        method: "POST",
-        body: JSON.stringify(request),
+    console.log("Registering user:", request);
+    const response = await fetch("https://localhost:7197/auth/register", {
+        method:"POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username: request.username,
+            password: request.password,
+        }),
     });
     if (!response.ok) {
         throw new Error(`Failed to register: ${response.status} ${response.statusText}`);

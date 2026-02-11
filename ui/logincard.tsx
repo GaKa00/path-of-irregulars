@@ -20,10 +20,13 @@ export default function LoginCard() {
   login({accountId: response.accountId, username: response.username}, response.token);
       
   router.push("/meta");
-    } catch (error) {
+    } catch (error ) {
+      setError(`Failed to login: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setError("Invalid username or password");
     }
-  
+  finally {
+    setError(null);
+  }
   }
 
   return (
@@ -59,8 +62,6 @@ export default function LoginCard() {
         >
           Login
         </button>
-      </div>
-
       <div className="mt-4 flex items-center justify-center text-xs text-slate-400">
         <p>
           Don&apos;t have an account?{" "}
@@ -69,6 +70,8 @@ export default function LoginCard() {
           </Link>
         </p>
       </div>
+      </div>
+
     </>
   );
 }

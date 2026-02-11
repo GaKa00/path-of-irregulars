@@ -24,8 +24,10 @@ export default function RegisterPage() {
       await registerUser({ username, password });
       alert("Registered successfully");
       router.push("/meta");
-    } catch (error) {
-      setError("Failed to register");
+    } catch (error ) {
+      setError(`Failed to register: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setError(null);
     }
   }
 
@@ -71,9 +73,6 @@ export default function RegisterPage() {
                 {error}
               </p>
             )}
-          </div>
-        </div>
-
         <div className="mt-4 flex items-center justify-center text-xs text-slate-400">
           <p>
             Already have an account?{" "}
@@ -82,6 +81,9 @@ export default function RegisterPage() {
             </Link>
           </p>
         </div>
+          </div>
+        </div>
+
       </section>
     </main>
   );
