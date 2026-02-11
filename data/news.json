@@ -1,0 +1,10 @@
+ {
+    "newsItems": [
+        {
+            "id": 1,
+            "title": "Version 0.1.0 Released",
+            "description": "Open Beta Version 0.1.0 Released! You can now play the game and test the mechanics. We are looking for feedback to improve the game. Please report any bugs you find.",
+            "date": "2026-01-11"
+        }
+    ]
+ }
