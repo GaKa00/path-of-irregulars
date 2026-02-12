@@ -1,7 +1,7 @@
 export type CardType =
-  | 'climber'
-  | 'spell'
-  | 'artifact'
+  | 'Climber'
+  | 'Spell'
+  | 'Artifact'
 
 export type Card = {
   id: string
@@ -9,5 +9,5 @@ export type Card = {
   type: CardType
   power?: number
   description: string
-  imageUrl: string
+
 }

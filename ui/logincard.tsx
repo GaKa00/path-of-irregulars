@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from '@/stores/auth.store'
-import { loginRequest } from "@/services/authService";
+import { loginRequest } from "@/domains/user/authService";
 import { useState } from "react";
 
 export default function LoginCard() {
