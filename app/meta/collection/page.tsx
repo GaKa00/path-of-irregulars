@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAllCards } from "@/domains/collection/collection.service";
 import { CardLibrary } from "@/domains/collection/collection.model";
-import Card from "@/ui/card";
+import CardView from "@/ui/card";
 import CardGrid from "@/ui/cardgrid";
 
 export default function CollectionPage() {
@@ -60,7 +60,7 @@ export default function CollectionPage() {
 
             <div className="flex h-64 items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-950/40 text-sm text-slate-500">
               {collection?.cards.map((card) => (
-                <Card key={card.id} name={card.name} type={card.type} power={card.power ?? 0} description={card.description} />
+                <CardView key={card.id} name={card.name} type={card.type} power={card.power ?? 0} description={card.description} />
               ))}
             </div>
           </div>

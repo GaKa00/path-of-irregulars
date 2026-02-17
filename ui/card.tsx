@@ -1,4 +1,4 @@
-export default function Card({
+export default function CardView({
   name,
   type,
   power,
@@ -42,9 +42,7 @@ export default function Card({
           {type}
         </span>
         {hasPower && (
-          <span className="text-[10px] text-emerald-400/80">
-            Power {power}
-          </span>
+          <span className="text-[10px] text-emerald-400/80">Power {power}</span>
         )}
       </div>
     </div>
