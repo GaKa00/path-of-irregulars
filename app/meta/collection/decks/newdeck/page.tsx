@@ -9,6 +9,7 @@ import { addCardToDeck, removeCardFromDeck } from '@/domains/deckcollection/deck
 import { getAllCards } from '@/domains/collection/collection.service'
 
 import CardView from '@/ui/card'
+import { deckService } from '@/domains/deckcollection/deck.service'
 
 const emptyDeck: Deck = {
   id: 0,
@@ -21,7 +22,13 @@ export default function NewDeckPage() {
   const [deck, setDeck] = useState<Deck>(emptyDeck)
   const [cards, setCards] = useState<Card[]>([])
   const router = useRouter()
-
+  
+  
+  const handleSaveDeck = () => {
+    deckService.saveDeck(deck).then(res => {
+      router.push(`/meta/collection/decks/${res.id}`)
+    })
+  }
   useEffect(() => {
    getAllCards().then(res => {
       setCards(res.cards)
@@ -121,7 +128,7 @@ export default function NewDeckPage() {
               )}
             </div>
 
-            <button className="btn btn-primary mt-4 rounded-xl text-sm">
+            <button className="btn btn-primary mt-4 rounded-xl text-sm" onClick={handleSaveDeck}>
               Save deck (stub)
             </button>
           </aside>

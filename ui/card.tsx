@@ -12,7 +12,7 @@ export default function CardView({
   const hasPower = power !== 0;
 
   return (
-    <div className="panel w-full max-w-xs rounded-2xl border border-slate-700 bg-gradient-to-b from-slate-900 to-slate-950 p-3 shadow-lg">
+    <div className="panel w-full max-w-xs rounded-2xl border border-slate-700 bg-linear-to-b from-slate-900 to-slate-950 p-3 shadow-lg">
       {/* Top bar: name and power badge */}
       <div className="mb-2 flex items-start justify-between">
         <div className="max-w-[70%]">
