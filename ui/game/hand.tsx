@@ -1,7 +1,7 @@
 'use client'
 
 import { Card } from '@/domains/collection/collection.types'
-import GameCard from './gamecard'
+import GameCard from './game/gamecard'
 
 interface HandProps {
   cards: Card[]

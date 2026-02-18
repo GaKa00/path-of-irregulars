@@ -1,14 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import GameBoard from '@/ui/gameboard'
+import GameBoard from '@/ui/game/gameboard'
 import BoardField from '@/ui/boardfield'
 import Hand from '@/ui/hand'
-import TurnIndicator from '@/ui/turnindicator'
-import PassButton from '@/ui/passbutton'
-import RoundScore from '@/ui/roundscore'
-import GameInfo from '@/ui/gameinfo'
-import MulliganPhase from '@/ui/mulliganphase'
+import TurnIndicator from '@/ui/game/turnindicator'
+import PassButton from '@/ui/game/passbutton'
+import RoundScore from '@/ui/game/roundscore'
+import GameInfo from '@/ui/game/gameinfo'
+import MulliganPhase from '@/ui/game/mulliganphase'
 import { Card } from '@/domains/collection/collection.types'
 
 // Mock data - will be replaced with actual state management later

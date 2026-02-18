@@ -58,7 +58,7 @@ export default function DeckCard({
         <div className="mb-3 flex gap-2">
           {previewCards.map((entry, index) => (
             <div
-              key={entry.card.id}
+              key={entry.cardId}
               className="flex h-8 w-8 items-center justify-center rounded border border-slate-700 bg-slate-900/80 text-[10px] text-slate-400"
               title={entry.card.name}
             >

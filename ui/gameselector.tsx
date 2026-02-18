@@ -1,4 +1,4 @@
-import MetaButton from "@/ui/metabutton";
+import MetaButton from "@/ui/meta/metabutton";
 
 export default function GameSelector() {
   const buttons = [

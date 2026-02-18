@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAllCards } from "@/domains/collection/collection.service";
 import { CardLibrary } from "@/domains/collection/collection.model";
-import CardView from "@/ui/card";
-import CardGrid from "@/ui/cardgrid";
+import CollectionNavbar from "@/ui/meta/collectionNavbar";
+import CardCollection from "@/ui/meta/cardcollection";
 
 export default function CollectionPage() {
   const [collection, setCollection] = useState<CardLibrary | null>(null);
@@ -27,43 +27,12 @@ export default function CollectionPage() {
     <div className="page-shell">
       <div className="page-shell-inner">
         {/* Top bar with back button and title */}
-        <div className="top-bar">
-          <button onClick={handleBack} className="btn btn-ghost">
-            <span className="text-lg">&larr;</span>
-            <span>Back</span>
-          </button>
-
-          <div className="text-right">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Collection
-            </h1>
-            <p className="text-sm text-slate-400">
-              Cards owned:{" "}
-              <span className="font-medium text-slate-100">
-                {collection?.cards.length ?? 0}
-              </span>
-            </p>
-          </div>
-        </div>
+<CollectionNavbar handleBack={handleBack} collection={collection} />
 
         {/* Main content */}
         <div className="grid flex-1 gap-6 md:grid-cols-[2fr,1.2fr]">
           {/* Collection summary / placeholder area */}
-          <div className="panel p-5">
-            <h2 className="mb-2 text-lg font-semibold text-slate-100">
-              Your Cards
-            </h2>
-            <p className="mb-4 text-sm text-slate-400">
-              Browse and manage your card library. Deck building tools are on
-              the right.
-            </p>
-
-            <div className="flex h-64 items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-950/40 text-sm text-slate-500">
-              {collection?.cards.map((card) => (
-                <CardView key={card.id} name={card.name} type={card.type} power={card.power ?? 0} description={card.description} />
-              ))}
-            </div>
-          </div>
+          <CardCollection collection={collection} />
 
           {/* Deck creation UI */}
           <div className="panel-accent flex flex-col p-5">
