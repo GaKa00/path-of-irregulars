@@ -1,4 +1,4 @@
-import { CardLibrary } from "@/domains/collection/collection.model";
+import { CardLibrary } from "@/domains/collection/collection.types";
 
 export default function CollectionNavbar({ handleBack, collection }: { handleBack: () => void, collection: CardLibrary | null }) {
     return (
