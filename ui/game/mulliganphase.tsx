@@ -2,11 +2,12 @@
 
 import { Card } from '@/domains/collection/collection.types'
 import Hand from './hand'
+import { GameCard } from '@/domains/game/game.types'
 
 interface MulliganPhaseProps {
-  startingHand: Card[]
+  startingHand: GameCard[]
   selectedCardIds: string[]
-  onCardToggle: (card: Card) => void
+  onCardToggle: (card: GameCard) => void
   onConfirm: () => void
   maxSwaps?: number
 }

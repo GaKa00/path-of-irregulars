@@ -48,6 +48,11 @@ export default function NewDeckPage() {
   }
 
   const totalCards = deck.cards.reduce((sum, entry) => sum + entry.copies, 0)
+  const convertTypeEnumToText = (type: number) => {
+    if (type === 0) return "Climber";
+    if (type === 1) return "Spell";
+    if (type === 2) return "Artifact";
+  };
 
   return (
     <div className="page-shell">
@@ -88,7 +93,7 @@ export default function NewDeckPage() {
                   <CardView
                     key={card.id}
                     name={card.name}
-                    type={card.type}
+                    type={convertTypeEnumToText(card.type)}
                     power={card.power ?? 0}
                     description={card.description}
                   />
