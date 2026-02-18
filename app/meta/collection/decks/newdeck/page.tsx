@@ -47,6 +47,8 @@ export default function NewDeckPage() {
     router.back()
   }
 
+  const totalCards = deck.cards.reduce((sum, entry) => sum + entry.copies, 0)
+
   return (
     <div className="page-shell">
       <div className="page-shell-inner">
@@ -62,7 +64,7 @@ export default function NewDeckPage() {
               {deck.name}
             </h1>
             <p className="text-sm text-slate-400">
-              {deck.cards.length} / 40 cards
+              {totalCards} / 40 cards
             </p>
           </div>
         </div>
@@ -116,7 +118,7 @@ export default function NewDeckPage() {
                         className="flex w-full items-center justify-between rounded-lg border border-emerald-800/60 bg-slate-900/80 px-2 py-1 hover:bg-slate-900"
                       >
                         <span className="text-emerald-100">
-                          {entry.cardId} x{entry.copies}
+                        {entry.cardId} x {entry.copies}
                         </span>
                         <span className="text-[10px] text-emerald-300">
                           Remove

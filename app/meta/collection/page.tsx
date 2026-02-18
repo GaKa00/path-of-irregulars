@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAllCards } from "@/domains/collection/collection.service";
-import { CardLibrary } from "@/domains/collection/collection.model";
+import { CardLibrary } from "@/domains/collection/collection.types";
 import CollectionNavbar from "@/ui/meta/collectionNavbar";
 import CardCollection from "@/ui/meta/cardcollection";
 

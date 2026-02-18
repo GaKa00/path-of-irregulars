@@ -1,3 +1,5 @@
+
+
 export default function CardView({
   name,
   type,
@@ -5,8 +7,8 @@ export default function CardView({
   description,
 }: {
   name: string;
-  type: string;
-  power: number;
+  type: string | undefined;
+  power: number | undefined;
   description: string;
 }) {
   const hasPower = power !== 0;

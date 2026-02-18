@@ -1,4 +1,4 @@
-import { CardLibrary } from './collection.model'
+import { CardLibrary } from './collection.types'
 import type { Card } from './collection.types'
 
 export async function getAllCards(): Promise<CardLibrary> {
@@ -7,6 +7,7 @@ export async function getAllCards(): Promise<CardLibrary> {
       throw new Error(`Failed to fetch cards: ${response.status} ${response.statusText}`)
     }
     const cards = (await response.json()) as Card[]
+    
 
     return { cards }
   
