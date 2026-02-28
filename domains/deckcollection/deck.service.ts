@@ -1,18 +1,20 @@
 import { mapDeckFromApi } from './deck.utils'
 import type { Deck, DeckApiModel } from './deck.types'
+import { useAuthStore } from '@/stores/auth.store'
 
 const API_BASE_URL = 'https://localhost:7197'
 
-type DeckUpsertPayload = {
-  id: Deck['id']
-  name: Deck['name']
-  accountId: Deck['accountId']
-  cards: { cardId: string; amount: number }[]
+type DeckPayload = {
+  Name: string
+  CardIds: string[]  
 }
 
+
+const accountId = useAuthStore.getState().user?.accountId;
+
 export const deckService = {
-  async getUserDecks(accountId: number): Promise<Deck[]> {
-    const response = await fetch(`${API_BASE_URL}/account/${accountId}/decks`)
+  async getUserDecks(): Promise<Deck[]> {
+    const response = await fetch(`${API_BASE_URL}/accounts/${accountId}/decks`)
     if (!response.ok) {
       throw new Error(
         `Failed to fetch decks: ${response.status} ${response.statusText}`,
@@ -24,15 +26,14 @@ export const deckService = {
   },
 
   async saveDeck(deck: Deck): Promise<Deck> {
-    const payload: DeckUpsertPayload = {
-      id: deck.id,
-      name: deck.name,
-      accountId: deck.accountId,
-      cards: deck.cards.map(c => ({ cardId: c.cardId, amount: c.copies })),
+    const payload: DeckPayload = {
+      Name: deck.name,
+      CardIds: deck.cards.flatMap(c => Array(c.copies).fill(c.cardId)),
     }
 
+    console.log(payload);
     const response = await fetch(
-      `${API_BASE_URL}/account/${deck.accountId}/decks`,
+      `${API_BASE_URL}/accounts/1007/decks`,
       {
         method: 'POST',
         headers: {

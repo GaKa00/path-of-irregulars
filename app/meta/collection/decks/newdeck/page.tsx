@@ -7,25 +7,27 @@ import { Card } from '@/domains/collection/collection.types'
 import { Deck } from '@/domains/deckcollection/deck.types'
 import { addCardToDeck, removeCardFromDeck } from '@/domains/deckcollection/deck.utils'
 import { getAllCards } from '@/domains/collection/collection.service'
+import { useAuthStore } from '@/stores/auth.store'
 
 import CardView from '@/ui/card'
 import { deckService } from '@/domains/deckcollection/deck.service'
 
-const emptyDeck: Deck = {
+const emptyDeck = (accountId: number): Deck => ({
   id: 0,
   name: 'New Deck',
-  accountId: 0,
+  accountId,
   cards: [],
-}
+})
 
 export default function NewDeckPage() {
-  const [deck, setDeck] = useState<Deck>(emptyDeck)
+  const accountId = useAuthStore(s => s.user?.accountId ?? 0)
+  const [deck, setDeck] = useState<Deck>(() => emptyDeck(accountId))
   const [cards, setCards] = useState<Card[]>([])
   const router = useRouter()
-  
-  
+
   const handleSaveDeck = () => {
-    deckService.saveDeck(deck).then(res => {
+    const deckToSave = deck.accountId ? deck : { ...deck, accountId }
+    deckService.saveDeck(deckToSave).then(res => {
       router.push(`/meta/collection/decks/${res.id}`)
     })
   }
