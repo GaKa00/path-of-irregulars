@@ -1,21 +1,26 @@
-import { User } from '@/domains/user/types/User'
+
 import { create } from 'zustand'
+import { AuthUser } from '@/domains/user/types/AuthUser'
+
 
 
 type AuthState = {
-  user: User | null
+  user: AuthUser | null
+  token: string | null
   isAuthenticated: boolean
-  setUser: (user: User) => void
+  login: (user: AuthUser, token: string) => void
   logout: () => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
+  token: null,
   isAuthenticated: false,
 
-  setUser: (user) =>
+  login: (user: AuthUser, token: string) =>
     set({
       user,
+      token,
       isAuthenticated: true,
     }),
 

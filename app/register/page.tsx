@@ -1,6 +1,36 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { registerUser } from "@/domains/user/authService";
 
 export default function RegisterPage() {
+  const [error, setError] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+
+  const router = useRouter();
+
+  async function handleRegister(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    try {
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
+
+      await registerUser({ username, password });
+      alert("Registered successfully");
+      router.push("/meta");
+    } catch (error ) {
+      setError(`Failed to register: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setError(null);
+    }
+  }
+
   return (
     <main className="page-shell">
       <section className="page-shell-inner items-center justify-center">
@@ -11,35 +41,38 @@ export default function RegisterPage() {
               Begin your ascent to the top.
             </p>
 
-            <div className="space-y-3">
-              <input
-                type="email"
-                placeholder="Email"
-                className="field-input"
-              />
+            <form className="space-y-3" onSubmit={handleRegister}>
               <input
                 type="text"
                 placeholder="Username"
                 className="field-input"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <input
                 type="password"
                 placeholder="Password"
                 className="field-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <input
                 type="password"
                 placeholder="Confirm Password"
                 className="field-input"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
-            </div>
+              <button className="btn btn-primary mt-5 w-full rounded-xl" type="submit">
+                Register
+              </button>
+            </form>
 
-            <button className="btn btn-primary mt-5 w-full rounded-xl">
-              Register
-            </button>
-          </div>
-        </div>
-
+            {error && (
+              <p className="mt-3 text-sm text-red-400">
+                {error}
+              </p>
+            )}
         <div className="mt-4 flex items-center justify-center text-xs text-slate-400">
           <p>
             Already have an account?{" "}
@@ -48,6 +81,9 @@ export default function RegisterPage() {
             </Link>
           </p>
         </div>
+          </div>
+        </div>
+
       </section>
     </main>
   );

@@ -2,21 +2,31 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from '@/stores/auth.store'
+import { loginRequest } from "@/domains/user/authService";
+import { useState } from "react";
 
 export default function LoginCard() {
-  const setUser = useAuthStore((s) => s.setUser)
+  const [error, setError] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const login = useAuthStore((s) => s.login)
   const router = useRouter();
 
-  const handleLogin = () => {
-    setUser({
-      id: '1',
-      username: 'Irregular',
-      email: 'irregular@tower.com',
-      password: 'password',
-      createdAt: new Date(),
-    })
+  async function handleLogin( e: React.FormEvent)  {
+    e.preventDefault();
+    try {
+  const response = await loginRequest({username, password});
 
-    router.push("/meta")
+  login({accountId: response.accountId, username: response.username}, response.token);
+      
+  router.push("/meta");
+    } catch (error ) {
+      setError(`Failed to login: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setError("Invalid username or password");
+    }
+  finally {
+    setError(null);
+  }
   }
 
   return (
@@ -27,14 +37,20 @@ export default function LoginCard() {
           Login to your account to continue.
         </p>
 
+        {error && <p className="text-red-500">{error}</p>}
+
         <div className="space-y-3">
           <input
-            type="email"
-            placeholder="Email"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
             className="field-input"
           />
           <input
             type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             className="field-input"
           />
@@ -46,8 +62,6 @@ export default function LoginCard() {
         >
           Login
         </button>
-      </div>
-
       <div className="mt-4 flex items-center justify-center text-xs text-slate-400">
         <p>
           Don&apos;t have an account?{" "}
@@ -56,6 +70,8 @@ export default function LoginCard() {
           </Link>
         </p>
       </div>
+      </div>
+
     </>
   );
 }

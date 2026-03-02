@@ -48,12 +48,10 @@ export default function CardGrid({
           `}
         >
           <CardComponent
-            id={card.id}
             name={card.name}
             type={card.type}
             power={card.power || 0}
             description={card.description}
-            imageUrl={card.imageUrl}
           />
         </div>
       ))}
