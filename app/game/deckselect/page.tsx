@@ -1,4 +1,15 @@
+'use client'
+import { getUserDecks } from "@/domains/game/deckselection/deckselection.service";
+import { useEffect, useState } from "react";
+import { Deck } from "@/domains/deckcollection/deck.types";
+
 export default function DeckSelectPage() {
+
+  const [decks, setDecks] = useState<Deck[]>([]);
+  useEffect(() => {
+    getUserDecks().then(setDecks);
+  }, []);
+  console.log(decks);
   return (
     <>
       <div className="page-shell">

@@ -2,7 +2,7 @@
 import GameSelector from "@/ui/gameselector";
 import MetaFooter from "@/ui/meta/metafooter";
 import Navbar from "@/ui/meta/navbar";
-import Link from "next/link";
+
 
 export default function MetaPage() {
   return (
