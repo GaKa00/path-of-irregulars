@@ -28,7 +28,7 @@ return (
 
  
 
-      <div className="grid max-h-[28rem] grid-cols-1 gap-3 overflow-y-auto rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-500 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid max-h-112 grid-cols-1 gap-3 overflow-y-auto rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-500 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900 sm:grid-cols-2 lg:grid-cols-3">
         {collection?.cards.map(card => (
             <div key={card.id} className="flex items-stretch">
             <CardView

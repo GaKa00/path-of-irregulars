@@ -23,7 +23,7 @@ export function addCardToDeck(deck: Deck, cardId: string): Deck {
 
   return {
     ...deck,
-      cards: [...deck.cards, { cardId: cardId, copies: 1 }],
+    cards: [...deck.cards, { cardId, copies: 1 }],
   };
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import { Card } from '@/domains/collection/collection.types'
@@ -12,25 +12,28 @@ import { useAuthStore } from '@/stores/auth.store'
 import CardView from '@/ui/card'
 import { deckService } from '@/domains/deckcollection/deck.service'
 
-const emptyDeck = (accountId: number): Deck => ({
-  id: 0,
-  name: 'New Deck',
-  accountId,
-  cards: [],
-})
+
 
 export default function NewDeckPage() {
   const accountId = useAuthStore(s => s.user?.accountId ?? 0)
-  const [deck, setDeck] = useState<Deck>(() => emptyDeck(accountId))
   const [cards, setCards] = useState<Card[]>([])
+  const [isEditing, setIsEditing] = useState(false)
   const router = useRouter()
+
+  const emptyDeck = (): Deck => ({
+    id: accountId,
+    name: "New deck",
+    accountId,
+    cards: [],
+  });
+  const [deck, setDeck] = useState<Deck>(() => emptyDeck())
 
   const handleSaveDeck = () => {
     const deckToSave = deck.accountId ? deck : { ...deck, accountId }
-    deckService.saveDeck(deckToSave).then(res => {
-      router.push(`/meta/collection/decks/${res.id}`)
-    })
+    deckService.saveDeck(deckToSave)
+    alert(`Deck saved: ${deckToSave.name}`)
   }
+
   useEffect(() => {
    getAllCards().then(res => {
       setCards(res.cards)
@@ -56,6 +59,10 @@ export default function NewDeckPage() {
     if (type === 2) return "Artifact";
   };
 
+  const cardsById = useMemo(() => {
+    return new Map(cards.map(card => [card.id, card] as const))
+  }, [cards])
+
   return (
     <div className="page-shell">
       <div className="page-shell-inner">
@@ -67,9 +74,15 @@ export default function NewDeckPage() {
           </button>
 
           <div className="text-right">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              {deck.name}
-            </h1>
+            {isEditing ? (
+              // add feather icon for save- todo
+              <input type="text" value={deck.name} onChange={(e) => setDeck({ ...deck, name: e.target.value })} onBlur={() => setIsEditing(false)} className='text-2xl font-semibold tracking-tight border-white border-2 rounded-xl p-2' />
+            ) : (
+              <h1 className="text-2xl font-semibold tracking-tight" onClick={() => setIsEditing(true)}>
+                {deck.name}
+              </h1>
+            )}
+          
             <p className="text-sm text-slate-400">
               {totalCards} / 40 cards
             </p>
@@ -90,7 +103,7 @@ export default function NewDeckPage() {
                 <button
                   key={card.id}
                   onClick={() => handleAddCard(card.id)}
-                  className="btn btn-ghost justify-between rounded-xl border-slate-700 bg-slate-900/80 px-3 py-2 text-left text-xs hover:border-emerald-500"
+                 
                 >
                   <CardView
                     key={card.id}
@@ -125,7 +138,7 @@ export default function NewDeckPage() {
                         className="flex w-full items-center justify-between rounded-lg border border-emerald-800/60 bg-slate-900/80 px-2 py-1 hover:bg-slate-900"
                       >
                         <span className="text-emerald-100">
-                        {entry.cardId} x {entry.copies}
+                          {(cardsById.get(entry.cardId)?.name ?? entry.cardId)} x {entry.copies}
                         </span>
                         <span className="text-[10px] text-emerald-300">
                           Remove

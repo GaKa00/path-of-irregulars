@@ -1,5 +1,3 @@
-import { Card } from '../collection/collection.types'
-
 export type Deck = {
   id: number;
   name: string;
