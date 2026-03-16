@@ -18,6 +18,7 @@ export default function DeckSelectPage() {
 
   function handleDeckSelect(deckId: number) {
     selectDeck(deckId);
+    console.log(deckId);
   }
 
   async function handlePlay() {
@@ -26,22 +27,27 @@ export default function DeckSelectPage() {
       return;
     }
 
-    const response = await fetch(`/games/dev-create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `https://localhost:7197/matches`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          PlayerOneId: user?.accountId,
+          PlayerOneDeckId: deckId,
+          PlayerTwoId: 1,
+          PlayerTwoDeckId: 2,
+        }),
       },
-      body: JSON.stringify({
-        deckId,
-        opponentId: 999,
-      }),
-    });
+    );
 
     const data = await response.json();
 
     setMatch(data.gameId, data.opponentId);
 
-    navigate.push(`/game/${data.gameId}`);
+    navigate.push(`/game`);
   }
 
 
