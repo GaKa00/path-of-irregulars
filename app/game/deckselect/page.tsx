@@ -10,6 +10,7 @@ import { useAuthStore } from "@/stores/auth.store";
 export default function DeckSelectPage() {
   const selectDeck = useGameStore((s) => s.selectDeck);
   const setMatch = useGameStore((s) => s.setMatch);
+  // const setInstance = useGameStore((s) => s.setInstance); // Uncomment when instance IDs are available
   const deckId = useGameStore((s) => s.deckId);
   const selectedDeck = useGameStore((s) => s.deckId);
   const [decks, setDecks] = useState<Deck[]>([]);
@@ -46,8 +47,9 @@ export default function DeckSelectPage() {
     const data = await response.json();
 
     setMatch(data.gameId, data.opponentId);
+    // setInstance(data.instanceId); // Uncomment once backend returns instanceId
 
-    navigate.push(`/game`);
+    navigate.push(`/game/${data.gameId}`);
   }
 
 
@@ -93,7 +95,7 @@ useEffect(() => {
                   </h3>
                
                   <p className="text-sm text-slate-400 mt-2">
-                    {deck.cards?.length || 0} Cards
+                    {deck.cards?.reduce((sum, entry) => sum + entry.copies, 0) || 0} Cards
                   </p>
                 </div>
               ))}
