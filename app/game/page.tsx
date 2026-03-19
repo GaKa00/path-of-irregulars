@@ -10,6 +10,7 @@ import RoundScore from '@/ui/game/roundscore';
 import GameInfo from '@/ui/game/gameinfo';
 import MulliganPhase from '@/ui/game/mulliganphase';
 import { GameCard } from '@/domains/game/game.types';
+import { useGameStore } from '@/stores/game.store'
 
 export default function GamePage() {
   const [isMulliganActive, setIsMulliganActive] = useState(false)
@@ -18,6 +19,21 @@ export default function GamePage() {
   const [roundNumber, setRoundNumber] = useState(1)
   const [playerScore, setPlayerScore] = useState(0)
   const [opponentScore, setOpponentScore] = useState(0)
+
+  const match = useGameStore((s) => s.match);
+  const opponentHandSize = match?.playerTwo.handSize;
+  const playerHandSize = match?.playerOne.handSize;
+  const opponentDeckSize = match?.playerTwo.deckSize;
+  const playerDeckSize = match?.playerOne.deckSize;
+  const opponentTotalPower = match?.playerTwo.totalPower;
+  const playerTotalPower = match?.playerOne.totalPower;
+  const opponentWonRounds = match?.playerTwo.wonRounds;
+  const playerWonRounds = match?.playerOne.wonRounds;
+  const opponentHasPassed = match?.playerTwo.hasPassed;
+  const playerHasPassed = match?.playerOne.hasPassed;
+  const opponentLanes = match?.playerTwo.lanes;
+  const playerLanes = match?.playerOne.lanes;
+ 
 
   const handleMulliganCardToggle = (card: GameCard) => {
     setSelectedMulliganCards((prev) => {
@@ -64,12 +80,12 @@ export default function GamePage() {
       <div className="mb-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-200">Opponent</h2>
-          <div className="text-sm text-slate-400">Cards in hand: ?</div>
+          <div className="text-sm text-slate-400">Cards in hand: {opponentHandSize}</div>
         </div>
         <BoardField
           cards={[]}
           owner="opponent"
-          totalPower={0}
+          totalPower={opponentTotalPower ?? 0}
         />
       </div>
 
@@ -77,19 +93,19 @@ export default function GamePage() {
       <div className="mb-6 grid gap-4 md:grid-cols-3">
         <div className="md:col-span-2">
           <RoundScore
-            playerScore={playerScore}
-            opponentScore={opponentScore}
-            currentRound={roundNumber}
+            playerScore={playerWonRounds ?? 0}
+            opponentScore={opponentWonRounds ?? 0}
+            currentRound={roundNumber ?? 1}
             maxRounds={3}
           />
         </div>
         <div>
           <GameInfo
-            roundNumber={roundNumber}
+            roundNumber={roundNumber ?? 1}
             turnNumber={1}
-            cardsInDeck={40}
-            cardsInHand={0}
-            opponentCardsInHand={undefined}
+            cardsInDeck={playerDeckSize ?? 0}
+            cardsInHand={playerHandSize ?? 0}
+            opponentCardsInHand={opponentHandSize ?? 0}
           />
         </div>
       </div>
@@ -117,7 +133,8 @@ export default function GamePage() {
       {/* Player Hand */}
       <div className="mb-6">
         <Hand
-          cards={[]}
+          // TODO: Map backend CardStateDto -> GameCard with full card info
+          cards={playerLanes?.flatMap((lane) => lane.cards) as any || []}
           selectedCardIds={[]}
           isMulliganMode={false}
           onCardClick={handleCardPlay}
