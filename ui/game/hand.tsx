@@ -45,7 +45,7 @@ export default function Hand({
       ) : (
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
           {cards.map(card => (
-            <div key={card.id} className="flex-shrink-0">
+            <div key={card.id} className="shrink-0">
               <GameCardView
                 card={{ ...card, isSelected: isCardSelected(card.id) }}
                 onClick={() => onCardClick?.(card)}

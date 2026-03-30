@@ -12,6 +12,7 @@ import MulliganPhase from '@/ui/game/mulliganphase';
 import { GameCard } from '@/domains/game/game.types';
 import { useGameStore } from '@/stores/game.store'
 
+
 export default function GamePage() {
   const [isMulliganActive, setIsMulliganActive] = useState(false)
   const [selectedMulliganCards, setSelectedMulliganCards] = useState<string[]>([])
@@ -73,7 +74,9 @@ export default function GamePage() {
       <div className="mb-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-200">Opponent</h2>
-          <div className="text-sm text-slate-400">Cards in hand: {opponentHandSize}</div>
+          <div className="text-sm text-slate-400">
+            Cards in hand: {opponentHandSize}
+          </div>
         </div>
         <BoardField
           cards={[]}
@@ -110,38 +113,36 @@ export default function GamePage() {
           playerName="You"
           opponentName="Opponent"
           turnNumber={1}
-          isWaiting={currentPlayer !== 'player'}
+          isWaiting={currentPlayer !== "player"}
         />
       </div>
 
       {/* Player Area (Bottom) */}
       <div className="mb-6">
         <BoardField
-          cards={[]}
+          cards={ []}
           owner="player"
-          totalPower={0}
-        />
+          totalPower={match?.playerOne.totalPower ?? 0}
+ />
       </div>
 
       {/* Player Hand */}
       <div className="mb-6">
         <Hand
-          // Backend returns CardStateDto (id/name/power). UI expects full Card fields,
-          // so we map with safe placeholders until backend sends type/description (or
-          // until we join with the card library here).
           cards={
-            playerLanes?.flatMap((lane) =>
-              lane.cards.map((c) => ({
-                id: c.id,
-                name: c.name,
-                type: 0,
-                power: c.power,
-                description: "",
-                isPlayable: false,
-                isSelected: false,
-              })),
-            ) || []
+            match?.playerOne.hand.map((item) => ({
+              // Use instanceId for the unique ID in the UI
+              id: item.instanceId,
+              // Pull the static info from the nested definition
+              name: item.definition.name,
+              power: item.power,
+              type: item.definition.type,
+              description: item.definition.description ?? "",
+              isPlayable: false,
+              isSelected: false,
+            })) ?? []
           }
+        
           selectedCardIds={[]}
           isMulliganMode={false}
           onCardClick={handleCardPlay}
@@ -152,11 +153,11 @@ export default function GamePage() {
       {/* Action Buttons */}
       <div className="flex justify-center">
         <PassButton
-          isPlayerTurn={currentPlayer === 'player'}
+          isPlayerTurn={currentPlayer === "player"}
           onClick={handlePass}
           disabled={false}
         />
       </div>
     </GameBoard>
-  )
+  );
 }

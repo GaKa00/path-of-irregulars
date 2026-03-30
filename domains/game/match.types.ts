@@ -1,14 +1,24 @@
-export type CardStateDto = {
-  id: string;
-  name: string;
-  power: number;
-};
+
 
 export type LaneStateDto = {
   laneType: number;
   cards: CardStateDto[];
 };
 
+export type CardStateDto = {
+  instanceId: string; 
+  definition: CardDefinition;
+  name: string; 
+  power: number; 
+  description: string | null;
+};
+
+export type CardDefinition = {
+  name: string;
+  type: string;
+  power: number;
+  description: string | null;
+};
 export type PlayerStateDto = {
   name: string;
   handSize: number;
@@ -16,6 +26,7 @@ export type PlayerStateDto = {
   totalPower: number;
   wonRounds: number;
   hasPassed: boolean;
+  hand: CardStateDto[]; // Changed from the nested object structure
   lanes: LaneStateDto[];
 };
 
@@ -28,4 +39,3 @@ export type MatchDto = {
   playerOne: PlayerStateDto;
   playerTwo: PlayerStateDto;
 };
-
