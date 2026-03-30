@@ -87,7 +87,7 @@ export default function GamePage() {
           <GameInfo
             roundNumber={roundNumber}
             turnNumber={1}
-            cardsInDeck={25}
+            cardsInDeck={40}
             cardsInHand={0}
             opponentCardsInHand={undefined}
           />
