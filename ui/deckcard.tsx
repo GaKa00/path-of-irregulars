@@ -1,7 +1,7 @@
 'use client'
 
 import { Deck } from '@/domains/deckcollection/deck.types'
-import Link from 'next/link'
+
 
 interface DeckCardProps {
   deck: Deck
@@ -20,12 +20,13 @@ export default function DeckCard({
   const uniqueCardCount = deck.cards.length
   const isComplete = cardCount === 25
 
+
   // Get preview of first few cards
   const previewCards = deck.cards.slice(0, 3)
 
   return (
     <div className="panel group relative p-4 transition-all duration-200 hover:border-emerald-500/50">
-      {/* Deck Header */}
+
       <div className="mb-3 flex items-start justify-between">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-slate-100">{deck.name}</h3>
@@ -58,16 +59,16 @@ export default function DeckCard({
         <div className="mb-3 flex gap-2">
           {previewCards.map((entry, index) => (
             <div
-              key={entry.card.id}
+              key={index}
               className="flex h-8 w-8 items-center justify-center rounded border border-slate-700 bg-slate-900/80 text-[10px] text-slate-400"
-              title={entry.card.name}
+              title={entry.cardId}
             >
               {entry.copies > 1 && (
                 <span className="absolute -right-1 -top-1 rounded-full bg-emerald-500 px-1 text-[8px] text-slate-900">
                   {entry.copies}
                 </span>
               )}
-              {entry.card.name.charAt(0).toUpperCase()}
+              {entry.cardId.charAt(0).toUpperCase()}
             </div>
           ))}
           {deck.cards.length > 3 && (

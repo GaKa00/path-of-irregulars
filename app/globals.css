@@ -213,6 +213,35 @@ body {
   .game-board {
     min-height: 100vh;
   }
+
+  /* Collection-specific helpers */
+  .card-scroll-wheel {
+    height: 16rem;
+    border-radius: 0.75rem;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(51, 65, 85); /* slate-700 */
+    background-color: rgba(2, 6, 23, 0.8); /* slate-950/80 */
+    padding: 0.75rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .card-collection-item {
+    flex: 0 0 13rem;
+    max-width: 13rem;
+  }
+
+  .deckcreation-list {
+    margin: 0;
+    padding-left: 1rem;
+    list-style-type: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 }
 
 

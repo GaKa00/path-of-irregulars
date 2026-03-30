@@ -1,21 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import GameBoard from '@/ui/gameboard'
-import BoardField from '@/ui/boardfield'
-import Hand from '@/ui/hand'
-import TurnIndicator from '@/ui/turnindicator'
-import PassButton from '@/ui/passbutton'
-import RoundScore from '@/ui/roundscore'
-import GameInfo from '@/ui/gameinfo'
-import MulliganPhase from '@/ui/mulliganphase'
-import { Card } from '@/domains/collection/collection.types'
-
-// Mock data - will be replaced with actual state management later
-const mockPlayerCards: Card[] = []
-const mockOpponentCards: Card[] = []
-const mockHand: Card[] = []
-const mockStartingHand: Card[] = []
+import GameBoard from '@/ui/game/gameboard'
+import BoardField from '@/ui/game/boardfield'
+import Hand from '@/ui/game/hand'
+import TurnIndicator from '@/ui/game/turnindicator'
+import PassButton from '@/ui/game/passbutton'
+import RoundScore from '@/ui/game/roundscore';
+import GameInfo from '@/ui/game/gameinfo';
+import MulliganPhase from '@/ui/game/mulliganphase';
+import { GameCard } from '@/domains/game/game.types';
 
 export default function GamePage() {
   const [isMulliganActive, setIsMulliganActive] = useState(false)
@@ -25,7 +19,7 @@ export default function GamePage() {
   const [playerScore, setPlayerScore] = useState(0)
   const [opponentScore, setOpponentScore] = useState(0)
 
-  const handleMulliganCardToggle = (card: Card) => {
+  const handleMulliganCardToggle = (card: GameCard) => {
     setSelectedMulliganCards((prev) => {
       if (prev.includes(card.id)) {
         return prev.filter((id) => id !== card.id)
@@ -43,7 +37,7 @@ export default function GamePage() {
     setSelectedMulliganCards([])
   }
 
-  const handleCardPlay = (card: Card) => {
+  const handleCardPlay = (card: GameCard) => {
     // TODO: Call backend playcard endpoint
     console.log('Playing card:', card)
   }
@@ -58,7 +52,7 @@ export default function GamePage() {
       {/* Mulligan Phase Overlay */}
       {isMulliganActive && (
         <MulliganPhase
-          startingHand={mockStartingHand}
+          startingHand={[]}
           selectedCardIds={selectedMulliganCards}
           onCardToggle={handleMulliganCardToggle}
           onConfirm={handleMulliganConfirm}
@@ -73,9 +67,9 @@ export default function GamePage() {
           <div className="text-sm text-slate-400">Cards in hand: ?</div>
         </div>
         <BoardField
-          cards={mockOpponentCards}
+          cards={[]}
           owner="opponent"
-          totalPower={mockOpponentCards.reduce((sum, card) => sum + (card.power || 0), 0)}
+          totalPower={0}
         />
       </div>
 
@@ -94,7 +88,7 @@ export default function GamePage() {
             roundNumber={roundNumber}
             turnNumber={1}
             cardsInDeck={25}
-            cardsInHand={mockHand.length}
+            cardsInHand={0}
             opponentCardsInHand={undefined}
           />
         </div>
@@ -114,16 +108,16 @@ export default function GamePage() {
       {/* Player Area (Bottom) */}
       <div className="mb-6">
         <BoardField
-          cards={mockPlayerCards}
+          cards={[]}
           owner="player"
-          totalPower={mockPlayerCards.reduce((sum, card) => sum + (card.power || 0), 0)}
+          totalPower={0}
         />
       </div>
 
       {/* Player Hand */}
       <div className="mb-6">
         <Hand
-          cards={mockHand}
+          cards={[]}
           selectedCardIds={[]}
           isMulliganMode={false}
           onCardClick={handleCardPlay}

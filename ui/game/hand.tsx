@@ -1,13 +1,13 @@
 'use client'
 
-import { Card } from '@/domains/collection/collection.types'
-import GameCard from './gamecard'
+import type { GameCard } from '@/domains/game/game.types'
+import GameCardView from './gameCardView'
 
 interface HandProps {
-  cards: Card[]
+  cards: GameCard[]
   selectedCardIds?: string[]
   isMulliganMode?: boolean
-  onCardClick?: (card: Card) => void
+  onCardClick?: (card: GameCard) => void
   maxCards?: number
 }
 
@@ -16,7 +16,7 @@ export default function Hand({
   selectedCardIds = [],
   isMulliganMode = false,
   onCardClick,
-  maxCards = 10
+  maxCards = 10,
 }: HandProps) {
   const isCardSelected = (cardId: string) => selectedCardIds.includes(cardId)
 
@@ -44,12 +44,10 @@ export default function Hand({
         </div>
       ) : (
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
-          {cards.map((card) => (
+          {cards.map(card => (
             <div key={card.id} className="flex-shrink-0">
-              <GameCard
-                card={card}
-                isPlayable={!isMulliganMode}
-                isSelected={isCardSelected(card.id)}
+              <GameCardView
+                card={{ ...card, isSelected: isCardSelected(card.id) }}
                 onClick={() => onCardClick?.(card)}
                 size="medium"
               />

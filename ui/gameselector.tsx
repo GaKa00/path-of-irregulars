@@ -1,8 +1,8 @@
-import MetaButton from "@/ui/metabutton";
+import MetaButton from "@/ui/meta/metabutton";
 
 export default function GameSelector() {
   const buttons = [
-    { title: "Play", link: "/game/deckselection" },
+    { title: "Play", link: "/game/deckselect" },
     { title: "Modes (WIP)", link: "/game/modes" },
     { title: "Collection", link: "/meta/collection" },
   ];

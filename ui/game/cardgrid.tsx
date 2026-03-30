@@ -1,7 +1,7 @@
 'use client'
 
 import { Card } from '@/domains/collection/collection.types'
-import CardComponent from './card'
+import CardComponent from '@/ui/card'
 
 interface CardGridProps {
   cards: Card[]
