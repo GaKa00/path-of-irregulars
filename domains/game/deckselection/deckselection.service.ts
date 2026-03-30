@@ -23,5 +23,6 @@ export async function createMatch(gameStart: GameStart): Promise<MatchDto> {
     );
   }
 
+
   return (await response.json()) as MatchDto;
 }

@@ -16,22 +16,15 @@ export default function GamePage() {
   const [isMulliganActive, setIsMulliganActive] = useState(false)
   const [selectedMulliganCards, setSelectedMulliganCards] = useState<string[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<'player' | 'opponent'>('player')
-  const [roundNumber, setRoundNumber] = useState(1)
-  const [playerScore, setPlayerScore] = useState(0)
-  const [opponentScore, setOpponentScore] = useState(0)
+  const [roundNumber] = useState(1)
 
   const match = useGameStore((s) => s.match);
   const opponentHandSize = match?.playerTwo.handSize;
   const playerHandSize = match?.playerOne.handSize;
-  const opponentDeckSize = match?.playerTwo.deckSize;
   const playerDeckSize = match?.playerOne.deckSize;
   const opponentTotalPower = match?.playerTwo.totalPower;
-  const playerTotalPower = match?.playerOne.totalPower;
   const opponentWonRounds = match?.playerTwo.wonRounds;
   const playerWonRounds = match?.playerOne.wonRounds;
-  const opponentHasPassed = match?.playerTwo.hasPassed;
-  const playerHasPassed = match?.playerOne.hasPassed;
-  const opponentLanes = match?.playerTwo.lanes;
   const playerLanes = match?.playerOne.lanes;
  
 
@@ -133,8 +126,22 @@ export default function GamePage() {
       {/* Player Hand */}
       <div className="mb-6">
         <Hand
-          // TODO: Map backend CardStateDto -> GameCard with full card info
-          cards={playerLanes?.flatMap((lane) => lane.cards) as any || []}
+          // Backend returns CardStateDto (id/name/power). UI expects full Card fields,
+          // so we map with safe placeholders until backend sends type/description (or
+          // until we join with the card library here).
+          cards={
+            playerLanes?.flatMap((lane) =>
+              lane.cards.map((c) => ({
+                id: c.id,
+                name: c.name,
+                type: 0,
+                power: c.power,
+                description: "",
+                isPlayable: false,
+                isSelected: false,
+              })),
+            ) || []
+          }
           selectedCardIds={[]}
           isMulliganMode={false}
           onCardClick={handleCardPlay}

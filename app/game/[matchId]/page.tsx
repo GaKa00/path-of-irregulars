@@ -2,32 +2,35 @@
 
 import GamePage from "../page";
 import { useGameStore } from "@/stores/game.store";
+import React, { useEffect } from "react";
+import { getMatch } from "@/domains/game/game.service";
 
 
 
 type GameRouteParams = {
-  params: {
+  params: Promise<{
     matchId: string;
-  };
+  }>;
 };
 
 export default function GameByMatchPage({ params }: GameRouteParams) {
-  const { matchId } = params;
+  const { matchId } = React.use(params); 
   const match = useGameStore((s) => s.match);
+  const setMatchDto = useGameStore((s) => s.setMatchDto);
 
-  // TODO: When backend supports instances, fetch by matchId + instanceId
-  // const instanceId = ... // derive or read from store/query
-  // useEffect(() => {
-  //   // fetch(`https://localhost:7197/matches/${matchId}/instances/${instanceId}`)
-  // }, [matchId, instanceId]);
+  useEffect(() => {
+    if (!matchId) return;
 
-  // If the user hard-refreshes, zustand state is lost. When you add a backend GET
-  // endpoint (e.g. GET /matches/{matchId}) you can fetch it here if `match` is missing.
-  // useEffect(() => {
-  //   if (!match || match.matchId !== matchId) {
-  //     // fetch(`https://localhost:7197/matches/${matchId}`)
-  //   }
-  // }, [match, matchId]);
+    // zustand may be empty on first render; prefer the route param as the source of truth.
+    const matchIdInStore = match?.matchId;
+    if (matchIdInStore && matchIdInStore === matchId) return;
+
+    if (!matchIdInStore || matchIdInStore !== matchId) {
+      getMatch(matchId)
+        .then((m) => setMatchDto(m))
+        .catch((err) => console.error("Failed to fetch match state:", err));
+    }
+  }, [match?.matchId, matchId, setMatchDto]);
 
   // For now we just reuse the existing GamePage shell
   return <GamePage />;
