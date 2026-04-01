@@ -1,31 +1,34 @@
-'use client'
+"use client";
 
-import { Card } from '@/domains/collection/collection.types'
-import type { GameCard as GameCardModel } from '@/domains/game/game.types'
-import GameCardView from './gameCardView'
+import { Card } from "@/domains/user/types/collection.types";
+import type { GameCard as GameCardModel } from "@/domains/user/types/game.types";
+import GameCardView from "./gameCardView";
 
 interface BoardFieldProps {
-  cards: Card[]
-  owner: 'player' | 'opponent'
-  totalPower?: number
-  onCardClick?: (card: Card) => void
+  cards: Card[];
+  owner: "player" | "opponent";
+  totalPower?: number;
+  onCardClick?: (card: Card) => void;
 }
 
 export default function BoardField({
   cards,
   owner,
   totalPower,
-  onCardClick
+  onCardClick,
 }: BoardFieldProps) {
-  const calculatedPower = cards.reduce((sum, card) => sum + (card.power || 0), 0)
-  const displayPower = totalPower !== undefined ? totalPower : calculatedPower
+  const calculatedPower = cards.reduce(
+    (sum, card) => sum + (card.power || 0),
+    0,
+  );
+  const displayPower = totalPower !== undefined ? totalPower : calculatedPower;
 
   return (
     <div className="panel w-full p-4">
       {/* Field Header */}
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-100 capitalize">
-          {owner === 'player' ? 'Your' : "Opponent's"} Field
+          {owner === "player" ? "Your" : "Opponent's"} Field
         </h3>
         <div className="flex items-center gap-2">
           <span className="text-xs text-slate-400">Total Power:</span>
@@ -49,7 +52,7 @@ export default function BoardField({
                 {
                   ...card,
                   isPlayable: false,
-                  isSelected: false
+                  isSelected: false,
                 } satisfies GameCardModel
               }
               onClick={onCardClick ? () => onCardClick(card) : undefined}
@@ -59,5 +62,5 @@ export default function BoardField({
         </div>
       )}
     </div>
-  )
+  );
 }

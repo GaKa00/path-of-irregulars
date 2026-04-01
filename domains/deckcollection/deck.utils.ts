@@ -1,5 +1,4 @@
-  
-import { Deck, DeckApiModel } from "./deck.types";
+import { Deck, DeckApiModel } from "../game/deckselection/deck.types";
 
 export function addCardToDeck(deck: Deck, cardId: string): Deck {
   const existing = deck.cards.find((c) => c.cardId === cardId);
@@ -52,8 +51,6 @@ export function removeCardFromDeck(deck: Deck, cardId: string): Deck {
     cards: deck.cards.filter((c) => c.cardId !== cardId),
   };
 }
-
-
 
 export function mapDeckFromApi(apiDeck: DeckApiModel): Deck {
   return {

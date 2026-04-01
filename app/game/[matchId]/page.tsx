@@ -42,7 +42,7 @@ export default function GameByMatchPage({ params }: GameRouteParams) {
       );
   }, [match?.matchId, matchId, setMatchDto]);
 
-  // Debug: confirm the store was actually updated with the DTO
+
   useEffect(() => {
     if (!match) return;
     console.log("[GameByMatchPage] Store match updated:", match.matchId);

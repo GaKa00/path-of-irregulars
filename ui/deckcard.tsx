@@ -1,45 +1,40 @@
-'use client'
+"use client";
 
-import { Deck } from '@/domains/deckcollection/deck.types'
-
+import { Deck } from "@/domains/game/deckselection/deck.types";
 
 interface DeckCardProps {
-  deck: Deck
-  onEdit?: (deck: Deck) => void
-  onDelete?: (deck: Deck) => void
-  showActions?: boolean
+  deck: Deck;
+  onEdit?: (deck: Deck) => void;
+  onDelete?: (deck: Deck) => void;
+  showActions?: boolean;
 }
 
 export default function DeckCard({
   deck,
   onEdit,
   onDelete,
-  showActions = true
+  showActions = true,
 }: DeckCardProps) {
-  const cardCount = deck.cards.reduce((sum, entry) => sum + entry.copies, 0)
-  const uniqueCardCount = deck.cards.length
-  const isComplete = cardCount === 40
+  const cardCount = deck.cards.reduce((sum, entry) => sum + entry.copies, 0);
+  const uniqueCardCount = deck.cards.length;
+  const isComplete = cardCount === 40;
 
-  const flattenedCards = deck.cards.flatMap(entry =>
-    Array.from({ length: entry.copies }, () => entry.cardId)
-  )
-
+  const flattenedCards = deck.cards.flatMap((entry) =>
+    Array.from({ length: entry.copies }, () => entry.cardId),
+  );
 
   // Get preview of first few cards from the flattened list
-  const previewCards = flattenedCards.slice(0, 3)
+  const previewCards = flattenedCards.slice(0, 3);
 
   return (
     <div className="panel group relative p-4 transition-all duration-200 hover:border-emerald-500/50">
-
       <div className="mb-3 flex items-start justify-between">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-slate-100">{deck.name}</h3>
           <div className="mt-1 flex items-center gap-3 text-xs text-slate-400">
             <span>
               {cardCount} / 40 cards
-              {isComplete && (
-                <span className="ml-1 text-emerald-400">✓</span>
-              )}
+              {isComplete && <span className="ml-1 text-emerald-400">✓</span>}
             </span>
             <span>•</span>
             <span>{uniqueCardCount} unique</span>
@@ -100,5 +95,5 @@ export default function DeckCard({
         </div>
       )}
     </div>
-  )
+  );
 }

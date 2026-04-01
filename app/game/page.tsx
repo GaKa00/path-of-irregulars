@@ -1,25 +1,29 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import GameBoard from '@/ui/game/gameboard'
-import BoardField from '@/ui/game/boardfield'
-import Hand from '@/ui/game/hand'
-import TurnIndicator from '@/ui/game/turnindicator'
-import PassButton from '@/ui/game/passbutton'
-import RoundScore from '@/ui/game/roundscore';
-import GameInfo from '@/ui/game/gameinfo';
-import MulliganPhase from '@/ui/game/mulliganphase';
-import { GameCard } from '@/domains/game/game.types';
-import { useGameStore } from '@/stores/game.store'
-import { passTurn } from '@/domains/game/game.service'
-import { useAuthStore } from '@/stores/auth.store'
-
+import { useState } from "react";
+import GameBoard from "@/ui/game/gameboard";
+import BoardField from "@/ui/game/boardfield";
+import Hand from "@/ui/game/hand";
+import TurnIndicator from "@/ui/game/turnindicator";
+import PassButton from "@/ui/game/passbutton";
+import RoundScore from "@/ui/game/roundscore";
+import GameInfo from "@/ui/game/gameinfo";
+import MulliganPhase from "@/ui/game/mulliganphase";
+import { GameCard } from "@/domains/user/types/game.types";
+import { useGameStore } from "@/stores/game.store";
+import { passTurn } from "@/domains/game/game.service";
+import { useAuthStore } from "@/stores/auth.store";
+import { CardInstance } from "@/domains/user/types/card.types";
 
 export default function GamePage() {
-  const [isMulliganActive, setIsMulliganActive] = useState(false)
-  const [selectedMulliganCards, setSelectedMulliganCards] = useState<string[]>([])
-  const [currentPlayer, setCurrentPlayer] = useState<'player' | 'opponent'>('player')
-  const [roundNumber] = useState(1)
+  const [isMulliganActive, setIsMulliganActive] = useState(false);
+  const [selectedMulliganCards, setSelectedMulliganCards] = useState<string[]>(
+    [],
+  );
+  const [currentPlayer, setCurrentPlayer] = useState<"player" | "opponent">(
+    "player",
+  );
+  const [roundNumber] = useState(1);
 
   const match = useGameStore((s) => s.match);
   const opponentHandSize = match?.playerTwo.handSize;
@@ -31,41 +35,38 @@ export default function GamePage() {
   const playerLanes = match?.playerOne.lanes;
 
   const playerId = useAuthStore((s) => s.user?.accountId);
- 
 
   const handleMulliganCardToggle = (card: GameCard) => {
     setSelectedMulliganCards((prev) => {
       if (prev.includes(card.id)) {
-        return prev.filter((id) => id !== card.id)
+        return prev.filter((id) => id !== card.id);
       }
       if (prev.length < 3) {
-        return [...prev, card.id]
+        return [...prev, card.id];
       }
-      return prev
-    })
-  }
+      return prev;
+    });
+  };
 
   const handleMulliganConfirm = () => {
     // TODO: Call backend endpoint to swap cards
-    setIsMulliganActive(false)
-    setSelectedMulliganCards([])
-  }
+    setIsMulliganActive(false);
+    setSelectedMulliganCards([]);
+  };
 
-  const handleCardPlay = (card: GameCard) => {
+  const handleCardPlay = (card: CardInstance) => {
     // TODO: Call backend playcard endpoint
-    console.log('Playing card:', card)
-  }
+    console.log("Playing card:", card);
+  };
 
   const handlePass = () => {
-
-    if (currentPlayer === 'player') {
-      passTurn(match?.matchId ?? '', playerId ?? 0)
+    if (currentPlayer === "player") {
+      passTurn(match?.matchId ?? "", playerId ?? 0);
     } else {
-      alert('Not your turn')
-     
+      alert("Not your turn");
     }
-    setCurrentPlayer(currentPlayer === 'player' ? 'opponent' : 'player')
-  }
+    setCurrentPlayer(currentPlayer === "player" ? "opponent" : "player");
+  };
 
   return (
     <GameBoard>
@@ -130,10 +131,10 @@ export default function GamePage() {
       {/* Player Area (Bottom) */}
       <div className="mb-6">
         <BoardField
-          cards={ []}
+          cards={[]}
           owner="player"
           totalPower={match?.playerOne.totalPower ?? 0}
- />
+        />
       </div>
 
       {/* Player Hand */}
@@ -141,22 +142,9 @@ export default function GamePage() {
         <Hand
           cards={
             match?.playerOne.hand.map((item) => ({
-              // Use instanceId for the unique ID in the UI
-              id: item.instanceId,
-              // Pull the static info from the nested definition
-              name: item.definition.name,
-              power: item.power,
-              type: item.definition.type,
-              description: item.definition.description ?? "",
-              isPlayable: false,
-              isSelected: false,
+              ...item,
             })) ?? []
           }
-        
-          selectedCardIds={[]}
-          isMulliganMode={false}
-          onCardClick={handleCardPlay}
-          maxCards={10}
         />
       </div>
 

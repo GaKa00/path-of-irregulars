@@ -1,4 +1,4 @@
-import type { Card } from "@/domains/collection/collection.types";
+import type { Card } from "@/domains/user/types/collection.types";
 
 export type GameCard = Card & {
   isPlayable: boolean;

@@ -1,24 +1,25 @@
-'use client'
+"use client";
 
-import { useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
-import { Card } from '@/domains/collection/collection.types'
-import { Deck } from '@/domains/deckcollection/deck.types'
-import { addCardToDeck, removeCardFromDeck } from '@/domains/deckcollection/deck.utils'
-import { getAllCards } from '@/domains/collection/collection.service'
-import { useAuthStore } from '@/stores/auth.store'
+import { Card } from "@/domains/user/types/collection.types";
+import { Deck } from "@/domains/game/deckselection/deck.types";
+import {
+  addCardToDeck,
+  removeCardFromDeck,
+} from "@/domains/deckcollection/deck.utils";
+import { getAllCards } from "@/domains/collection/collection.service";
+import { useAuthStore } from "@/stores/auth.store";
 
-import CardView from '@/ui/card'
-import { deckService } from '@/domains/deckcollection/deck.service'
-
-
+import CardView from "@/ui/card";
+import { deckService } from "@/domains/deckcollection/deck.service";
 
 export default function NewDeckPage() {
-  const accountId = useAuthStore(s => s.user?.accountId ?? 0)
-  const [cards, setCards] = useState<Card[]>([])
-  const [isEditing, setIsEditing] = useState(false)
-  const router = useRouter()
+  const accountId = useAuthStore((s) => s.user?.accountId ?? 0);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const router = useRouter();
 
   const emptyDeck = (): Deck => ({
     id: accountId,
@@ -26,33 +27,33 @@ export default function NewDeckPage() {
     accountId,
     cards: [],
   });
-  const [deck, setDeck] = useState<Deck>(() => emptyDeck())
+  const [deck, setDeck] = useState<Deck>(() => emptyDeck());
 
   const handleSaveDeck = () => {
-    const deckToSave = deck.accountId ? deck : { ...deck, accountId }
-    deckService.saveDeck(deckToSave)
-    alert(`Deck saved: ${deckToSave.name}`)
-  }
+    const deckToSave = deck.accountId ? deck : { ...deck, accountId };
+    deckService.saveDeck(deckToSave);
+    alert(`Deck saved: ${deckToSave.name}`);
+  };
 
   useEffect(() => {
-   getAllCards().then(res => {
-      setCards(res.cards)
-    })
-  }, [])
+    getAllCards().then((res) => {
+      setCards(res.cards);
+    });
+  }, []);
 
   const handleAddCard = (cardId: string) => {
-    setDeck(d => addCardToDeck(d, cardId))
-  }
+    setDeck((d) => addCardToDeck(d, cardId));
+  };
 
   const handleRemoveCard = (cardId: string) => {
-    setDeck(d => removeCardFromDeck(d, cardId))
-  }
+    setDeck((d) => removeCardFromDeck(d, cardId));
+  };
 
   const handleBack = () => {
-    router.back()
-  }
+    router.back();
+  };
 
-  const totalCards = deck.cards.reduce((sum, entry) => sum + entry.copies, 0)
+  const totalCards = deck.cards.reduce((sum, entry) => sum + entry.copies, 0);
   const convertTypeEnumToText = (type: number) => {
     if (type === 0) return "Climber";
     if (type === 1) return "Spell";
@@ -60,8 +61,8 @@ export default function NewDeckPage() {
   };
 
   const cardsById = useMemo(() => {
-    return new Map(cards.map(card => [card.id, card] as const))
-  }, [cards])
+    return new Map(cards.map((card) => [card.id, card] as const));
+  }, [cards]);
 
   return (
     <div className="page-shell">
@@ -76,16 +77,23 @@ export default function NewDeckPage() {
           <div className="text-right">
             {isEditing ? (
               // add feather icon for save- todo
-              <input type="text" value={deck.name} onChange={(e) => setDeck({ ...deck, name: e.target.value })} onBlur={() => setIsEditing(false)} className='text-2xl font-semibold tracking-tight border-white border-2 rounded-xl p-2' />
+              <input
+                type="text"
+                value={deck.name}
+                onChange={(e) => setDeck({ ...deck, name: e.target.value })}
+                onBlur={() => setIsEditing(false)}
+                className="text-2xl font-semibold tracking-tight border-white border-2 rounded-xl p-2"
+              />
             ) : (
-              <h1 className="text-2xl font-semibold tracking-tight" onClick={() => setIsEditing(true)}>
+              <h1
+                className="text-2xl font-semibold tracking-tight"
+                onClick={() => setIsEditing(true)}
+              >
                 {deck.name}
               </h1>
             )}
-          
-            <p className="text-sm text-slate-400">
-              {totalCards} / 40 cards
-            </p>
+
+            <p className="text-sm text-slate-400">{totalCards} / 40 cards</p>
           </div>
         </div>
 
@@ -100,11 +108,7 @@ export default function NewDeckPage() {
             </p>
             <div className="grid max-h-105 grid-cols-2 gap-2 overflow-y-auto pr-1 text-sm md:grid-cols-3">
               {cards.map((card) => (
-                <button
-                  key={card.id}
-                  onClick={() => handleAddCard(card.id)}
-                 
-                >
+                <button key={card.id} onClick={() => handleAddCard(card.id)}>
                   <CardView
                     key={card.id}
                     name={card.name}
@@ -138,7 +142,8 @@ export default function NewDeckPage() {
                         className="flex w-full items-center justify-between rounded-lg border border-emerald-800/60 bg-slate-900/80 px-2 py-1 hover:bg-slate-900"
                       >
                         <span className="text-emerald-100">
-                          {(cardsById.get(entry.cardId)?.name ?? entry.cardId)} x {entry.copies}
+                          {cardsById.get(entry.cardId)?.name ?? entry.cardId} x{" "}
+                          {entry.copies}
                         </span>
                         <span className="text-[10px] text-emerald-300">
                           Remove
@@ -150,7 +155,10 @@ export default function NewDeckPage() {
               )}
             </div>
 
-            <button className="btn btn-primary mt-4 rounded-xl text-sm" onClick={handleSaveDeck}>
+            <button
+              className="btn btn-primary mt-4 rounded-xl text-sm"
+              onClick={handleSaveDeck}
+            >
               Save deck (stub)
             </button>
           </aside>

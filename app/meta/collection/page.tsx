@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAllCards } from "@/domains/collection/collection.service";
-import { CardLibrary } from "@/domains/collection/collection.types";
+import { CardLibrary } from "@/domains/user/types/collection.types";
 import CollectionNavbar from "@/ui/meta/collectionNavbar";
 import CardCollection from "@/ui/meta/cardcollection";
 
@@ -27,7 +27,7 @@ export default function CollectionPage() {
     <div className="page-shell">
       <div className="page-shell-inner">
         {/* Top bar with back button and title */}
-<CollectionNavbar handleBack={handleBack} collection={collection} />
+        <CollectionNavbar handleBack={handleBack} collection={collection} />
 
         {/* Main content */}
         <div className="grid flex-1 gap-6 md:grid-cols-[2fr,1.2fr]">
