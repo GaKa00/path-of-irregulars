@@ -11,6 +11,8 @@ import GameInfo from '@/ui/game/gameinfo';
 import MulliganPhase from '@/ui/game/mulliganphase';
 import { GameCard } from '@/domains/game/game.types';
 import { useGameStore } from '@/stores/game.store'
+import { passTurn } from '@/domains/game/game.service'
+import { useAuthStore } from '@/stores/auth.store'
 
 
 export default function GamePage() {
@@ -27,6 +29,8 @@ export default function GamePage() {
   const opponentWonRounds = match?.playerTwo.wonRounds;
   const playerWonRounds = match?.playerOne.wonRounds;
   const playerLanes = match?.playerOne.lanes;
+
+  const playerId = useAuthStore((s) => s.user?.accountId);
  
 
   const handleMulliganCardToggle = (card: GameCard) => {
@@ -53,7 +57,13 @@ export default function GamePage() {
   }
 
   const handlePass = () => {
-    // TODO: Call backend endturn endpoint
+
+    if (currentPlayer === 'player') {
+      passTurn(match?.matchId ?? '', playerId ?? 0)
+    } else {
+      alert('Not your turn')
+     
+    }
     setCurrentPlayer(currentPlayer === 'player' ? 'opponent' : 'player')
   }
 
