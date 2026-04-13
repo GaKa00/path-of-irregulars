@@ -7,3 +7,10 @@ export type GameCard = Card & {
   // zone?: 'hand' | 'board' | 'graveyard'
   // indexInHand?: number
 };
+
+export type GameStart = {
+  PlayerOneId: number;
+  PlayerOneDeckId: number;
+  PlayerTwoId: number;
+  PlayerTwoDeckId: number;
+};

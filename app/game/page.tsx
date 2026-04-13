@@ -10,14 +10,28 @@ import RoundScore from '@/ui/game/roundscore';
 import GameInfo from '@/ui/game/gameinfo';
 import MulliganPhase from '@/ui/game/mulliganphase';
 import { GameCard } from '@/domains/game/game.types';
+import { useGameStore } from '@/stores/game.store'
+import { passTurn } from '@/domains/game/game.service'
+import { useAuthStore } from '@/stores/auth.store'
+
 
 export default function GamePage() {
   const [isMulliganActive, setIsMulliganActive] = useState(false)
   const [selectedMulliganCards, setSelectedMulliganCards] = useState<string[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<'player' | 'opponent'>('player')
-  const [roundNumber, setRoundNumber] = useState(1)
-  const [playerScore, setPlayerScore] = useState(0)
-  const [opponentScore, setOpponentScore] = useState(0)
+  const [roundNumber] = useState(1)
+
+  const match = useGameStore((s) => s.match);
+  const opponentHandSize = match?.playerTwo.handSize;
+  const playerHandSize = match?.playerOne.handSize;
+  const playerDeckSize = match?.playerOne.deckSize;
+  const opponentTotalPower = match?.playerTwo.totalPower;
+  const opponentWonRounds = match?.playerTwo.wonRounds;
+  const playerWonRounds = match?.playerOne.wonRounds;
+  const playerLanes = match?.playerOne.lanes;
+
+  const playerId = useAuthStore((s) => s.user?.accountId);
+ 
 
   const handleMulliganCardToggle = (card: GameCard) => {
     setSelectedMulliganCards((prev) => {
@@ -43,7 +57,13 @@ export default function GamePage() {
   }
 
   const handlePass = () => {
-    // TODO: Call backend endturn endpoint
+
+    if (currentPlayer === 'player') {
+      passTurn(match?.matchId ?? '', playerId ?? 0)
+    } else {
+      alert('Not your turn')
+     
+    }
     setCurrentPlayer(currentPlayer === 'player' ? 'opponent' : 'player')
   }
 
@@ -64,12 +84,14 @@ export default function GamePage() {
       <div className="mb-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-200">Opponent</h2>
-          <div className="text-sm text-slate-400">Cards in hand: ?</div>
+          <div className="text-sm text-slate-400">
+            Cards in hand: {opponentHandSize}
+          </div>
         </div>
         <BoardField
           cards={[]}
           owner="opponent"
-          totalPower={0}
+          totalPower={opponentTotalPower ?? 0}
         />
       </div>
 
@@ -77,19 +99,19 @@ export default function GamePage() {
       <div className="mb-6 grid gap-4 md:grid-cols-3">
         <div className="md:col-span-2">
           <RoundScore
-            playerScore={playerScore}
-            opponentScore={opponentScore}
-            currentRound={roundNumber}
+            playerScore={playerWonRounds ?? 0}
+            opponentScore={opponentWonRounds ?? 0}
+            currentRound={roundNumber ?? 1}
             maxRounds={3}
           />
         </div>
         <div>
           <GameInfo
-            roundNumber={roundNumber}
+            roundNumber={roundNumber ?? 1}
             turnNumber={1}
-            cardsInDeck={40}
-            cardsInHand={0}
-            opponentCardsInHand={undefined}
+            cardsInDeck={playerDeckSize ?? 0}
+            cardsInHand={playerHandSize ?? 0}
+            opponentCardsInHand={opponentHandSize ?? 0}
           />
         </div>
       </div>
@@ -101,23 +123,36 @@ export default function GamePage() {
           playerName="You"
           opponentName="Opponent"
           turnNumber={1}
-          isWaiting={currentPlayer !== 'player'}
+          isWaiting={currentPlayer !== "player"}
         />
       </div>
 
       {/* Player Area (Bottom) */}
       <div className="mb-6">
         <BoardField
-          cards={[]}
+          cards={ []}
           owner="player"
-          totalPower={0}
-        />
+          totalPower={match?.playerOne.totalPower ?? 0}
+ />
       </div>
 
       {/* Player Hand */}
       <div className="mb-6">
         <Hand
-          cards={[]}
+          cards={
+            match?.playerOne.hand.map((item) => ({
+              // Use instanceId for the unique ID in the UI
+              id: item.instanceId,
+              // Pull the static info from the nested definition
+              name: item.definition.name,
+              power: item.power,
+              type: item.definition.type,
+              description: item.definition.description ?? "",
+              isPlayable: false,
+              isSelected: false,
+            })) ?? []
+          }
+        
           selectedCardIds={[]}
           isMulliganMode={false}
           onCardClick={handleCardPlay}
@@ -128,11 +163,11 @@ export default function GamePage() {
       {/* Action Buttons */}
       <div className="flex justify-center">
         <PassButton
-          isPlayerTurn={currentPlayer === 'player'}
+          isPlayerTurn={currentPlayer === "player"}
           onClick={handlePass}
           disabled={false}
         />
       </div>
     </GameBoard>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { getUserDecks } from "@/domains/game/deckselection/deckselection.service";
+import { createMatch, getUserDecks } from "@/domains/game/deckselection/deckselection.service";
 import { useEffect, useState } from "react";
 import { Deck } from "@/domains/deckcollection/deck.types";
 import { useGameStore } from "@/stores/game.store";
@@ -10,6 +10,7 @@ import { useAuthStore } from "@/stores/auth.store";
 export default function DeckSelectPage() {
   const selectDeck = useGameStore((s) => s.selectDeck);
   const setMatch = useGameStore((s) => s.setMatch);
+  const setMatchDto = useGameStore((s) => s.setMatchDto);
   // const setInstance = useGameStore((s) => s.setInstance); // Uncomment when instance IDs are available
   const deckId = useGameStore((s) => s.deckId);
   const selectedDeck = useGameStore((s) => s.deckId);
@@ -27,42 +28,37 @@ export default function DeckSelectPage() {
       alert("Select a deck first");
       return;
     }
+    if (!user?.accountId) {
+      alert("You must be logged in to start a match");
+      return;
+    }
 
-    const response = await fetch(
-      `https://localhost:7197/matches`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          PlayerOneId: user?.accountId,
-          PlayerOneDeckId: deckId,
-          PlayerTwoId: 1,
-          PlayerTwoDeckId: 2,
-        }),
-      },
-    );
+    const match = await createMatch({
+      PlayerOneId: user.accountId,
+      PlayerOneDeckId: deckId,
+      PlayerTwoId: 1,
+      PlayerTwoDeckId: 2,
+    });
 
-    const data = await response.json();
+    setMatchDto(match);
+    // setInstance(match.instanceId); // Uncomment once backend returns instanceId
+    // If you want to keep opponentId in store too, set it here once backend includes it.
+    setMatch(match.matchId, 1);
 
-    setMatch(data.gameId, data.opponentId);
-    // setInstance(data.instanceId); // Uncomment once backend returns instanceId
-
-    navigate.push(`/game/${data.gameId}`);
+    navigate.push(`/game/${match.matchId}`);
   }
 
 
-const { user } = useAuthStore();
+  const { user } = useAuthStore();
 
 
-useEffect(() => {
-  if (user?.accountId) {
-    getUserDecks()
-      .then(setDecks)
-      .catch((err) => console.error(err));
-  }
-}, [user?.accountId]);
+  useEffect(() => {
+    if (user?.accountId) {
+      getUserDecks()
+        .then(setDecks)
+        .catch((err) => console.error(err));
+    }
+  }, [user?.accountId]);
 
   return (
     <div className="page-shell">
