@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { MatchDto } from "@/domains/game/match.types";
+import type { MatchDto } from "@/domains/user/types/match.types";
 
 type GameState = {
   userId?: number;

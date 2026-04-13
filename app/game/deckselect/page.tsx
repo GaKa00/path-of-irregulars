@@ -1,8 +1,11 @@
 "use client";
 
-import { createMatch, getUserDecks } from "@/domains/game/deckselection/deckselection.service";
+import {
+  createMatch,
+  getUserDecks,
+} from "@/domains/game/deckselection/deckselection.service";
 import { useEffect, useState } from "react";
-import { Deck } from "@/domains/deckcollection/deck.types";
+import { Deck } from "@/domains/game/deckselection/deck.types";
 import { useGameStore } from "@/stores/game.store";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth.store";
@@ -11,7 +14,6 @@ export default function DeckSelectPage() {
   const selectDeck = useGameStore((s) => s.selectDeck);
   const setMatch = useGameStore((s) => s.setMatch);
   const setMatchDto = useGameStore((s) => s.setMatchDto);
-  // const setInstance = useGameStore((s) => s.setInstance); // Uncomment when instance IDs are available
   const deckId = useGameStore((s) => s.deckId);
   const selectedDeck = useGameStore((s) => s.deckId);
   const [decks, setDecks] = useState<Deck[]>([]);
@@ -41,16 +43,13 @@ export default function DeckSelectPage() {
     });
 
     setMatchDto(match);
-    // setInstance(match.instanceId); // Uncomment once backend returns instanceId
     // If you want to keep opponentId in store too, set it here once backend includes it.
     setMatch(match.matchId, 1);
 
     navigate.push(`/game/${match.matchId}`);
   }
 
-
   const { user } = useAuthStore();
-
 
   useEffect(() => {
     if (user?.accountId) {
@@ -89,9 +88,13 @@ export default function DeckSelectPage() {
                   <h3 className="text-lg font-semibold text-slate-100">
                     {deck.name}
                   </h3>
-               
+
                   <p className="text-sm text-slate-400 mt-2">
-                    {deck.cards?.reduce((sum, entry) => sum + entry.copies, 0) || 0} Cards
+                    {deck.cards?.reduce(
+                      (sum, entry) => sum + entry.copies,
+                      0,
+                    ) || 0}{" "}
+                    Cards
                   </p>
                 </div>
               ))}

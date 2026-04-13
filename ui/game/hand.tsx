@@ -1,24 +1,21 @@
-'use client'
+"use client";
 
-import type { GameCard } from '@/domains/game/game.types'
-import GameCardView from './gameCardView'
+import type { GameCard } from "@/domains/user/types/game.types";
+import GameCardView from "./gameCardView";
+import { CardInstance } from "@/domains/user/types/card.types";
 
 interface HandProps {
-  cards: GameCard[]
-  selectedCardIds?: string[]
-  isMulliganMode?: boolean
-  onCardClick?: (card: GameCard) => void
-  maxCards?: number
+  cards: CardInstance[];
+  onCardClick?: (card: CardInstance) => void;
 }
 
 export default function Hand({
   cards,
-  selectedCardIds = [],
-  isMulliganMode = false,
+
   onCardClick,
-  maxCards = 10,
+ 
 }: HandProps) {
-  const isCardSelected = (cardId: string) => selectedCardIds.includes(cardId)
+
 
   return (
     <div className="panel w-full p-4">
@@ -27,14 +24,10 @@ export default function Hand({
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-semibold text-slate-100">Your Hand</h3>
           <span className="rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-300">
-            {cards.length} / {maxCards}
+            {cards.length} / {10}
           </span>
         </div>
-        {isMulliganMode && (
-          <span className="text-xs text-emerald-300">
-            Select cards to swap ({selectedCardIds.length} selected)
-          </span>
-        )}
+       
       </div>
 
       {/* Cards Container */}
@@ -44,10 +37,10 @@ export default function Hand({
         </div>
       ) : (
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
-          {cards.map(card => (
-            <div key={card.id} className="shrink-0">
+          {cards.map((card) => (
+            <div key={card.instanceId} className="shrink-0">
               <GameCardView
-                card={{ ...card, isSelected: isCardSelected(card.id) }}
+                card={{ ...card }}
                 onClick={() => onCardClick?.(card)}
                 size="medium"
               />
@@ -56,5 +49,5 @@ export default function Hand({
         </div>
       )}
     </div>
-  )
+  );
 }
