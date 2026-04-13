@@ -11,7 +11,7 @@ import GameInfo from "@/ui/game/gameinfo";
 import MulliganPhase from "@/ui/game/mulliganphase";
 import { GameCard } from "@/domains/user/types/game.types";
 import { useGameStore } from "@/stores/game.store";
-import { passTurn } from "@/domains/game/game.service";
+import { passTurn, playCard } from "@/domains/game/game.service";
 import { useAuthStore } from "@/stores/auth.store";
 import { CardInstance } from "@/domains/user/types/card.types";
 
@@ -24,6 +24,8 @@ export default function GamePage() {
     "player",
   );
   const [roundNumber] = useState(1);
+
+  const [selectedCard, setSelectedCard] = useState<CardInstance | null>(null);
 
   const match = useGameStore((s) => s.match);
   const opponentHandSize = match?.playerTwo.handSize;
@@ -54,9 +56,22 @@ export default function GamePage() {
     setSelectedMulliganCards([]);
   };
 
-  const handleCardPlay = (card: CardInstance) => {
+  const selectLane = async () => {
+    const lane = await alert("Select a lane to play the card");
+    return lane;
+  };
+
+  const handleCardPlay = async (card: CardInstance) => {
     // TODO: Call backend playcard endpoint
     console.log("Playing card:", card);
+    setSelectedCard(card);
+    alert("Card selected: " + card.definition.name + "Select a lane to play the card");
+    const lane = await selectLane();
+    if (lane !== undefined) {
+      await playCard(match?.matchId ?? "", playerId ?? 0, card.instanceId, lane);
+    }
+  
+
   };
 
   const handlePass = () => {
@@ -143,6 +158,7 @@ export default function GamePage() {
           cards={
             match?.playerOne.hand.map((item) => ({
               ...item,
+              onCardClick: handleCardPlay,
             })) ?? []
           }
         />

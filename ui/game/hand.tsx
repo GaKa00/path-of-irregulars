@@ -3,6 +3,7 @@
 import type { GameCard } from "@/domains/user/types/game.types";
 import GameCardView from "./gameCardView";
 import { CardInstance } from "@/domains/user/types/card.types";
+import { useState } from "react";
 
 interface HandProps {
   cards: CardInstance[];
@@ -41,7 +42,10 @@ export default function Hand({
             <div key={card.instanceId} className="shrink-0">
               <GameCardView
                 card={{ ...card }}
-                onClick={() => onCardClick?.(card)}
+                onClick={() => {
+                  onCardClick?.(card);
+                  
+                }}
                 size="medium"
               />
             </div>
