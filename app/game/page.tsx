@@ -24,17 +24,16 @@ export default function GamePage() {
     "player",
   );
   const [roundNumber] = useState(1);
-
-  const [selectedCard, setSelectedCard] = useState<CardInstance | null>(null);
+  const [pendingCard, setPendingCard] = useState<CardInstance | null>(null);
 
   const match = useGameStore((s) => s.match);
+  const setMatchDto = useGameStore((s) => s.setMatchDto);
   const opponentHandSize = match?.playerTwo.handSize;
   const playerHandSize = match?.playerOne.handSize;
   const playerDeckSize = match?.playerOne.deckSize;
   const opponentTotalPower = match?.playerTwo.totalPower;
   const opponentWonRounds = match?.playerTwo.wonRounds;
   const playerWonRounds = match?.playerOne.wonRounds;
-  const playerLanes = match?.playerOne.lanes;
 
   const playerId = useAuthStore((s) => s.user?.accountId);
 
@@ -56,22 +55,29 @@ export default function GamePage() {
     setSelectedMulliganCards([]);
   };
 
-  const selectLane = async () => {
-    const lane = await alert("Select a lane to play the card");
-    return lane;
+  const handleCardPlay = (card: CardInstance) => {
+    // Store the card and show lane selection on the board
+    setPendingCard(card);
   };
 
-  const handleCardPlay = async (card: CardInstance) => {
-    // TODO: Call backend playcard endpoint
-    console.log("Playing card:", card);
-    setSelectedCard(card);
-    alert("Card selected: " + card.definition.name + "Select a lane to play the card");
-    const lane = await selectLane();
-    if (lane !== undefined) {
-      await playCard(match?.matchId ?? "", playerId ?? 0, card.instanceId, lane);
-    }
-  
+  const handleLaneSelect = async (laneIndex: number) => {
+    if (!pendingCard || !match?.matchId || !playerId) return;
 
+    try {
+      const updatedMatch = await playCard(
+        match.matchId,
+        playerId,
+        pendingCard.instanceId,
+        laneIndex.toString(),
+        null,
+      );
+      setMatchDto(updatedMatch);
+      console.log("Card played successfully:", pendingCard.definition.name);
+    } catch (err) {
+      console.error("Failed to play card:", err);
+    } finally {
+      setPendingCard(null);
+    }
   };
 
   const handlePass = () => {
@@ -105,7 +111,7 @@ export default function GamePage() {
           </div>
         </div>
         <BoardField
-          cards={[]}
+          lanes={match?.playerTwo.lanes}
           owner="opponent"
           totalPower={opponentTotalPower ?? 0}
         />
@@ -146,21 +152,19 @@ export default function GamePage() {
       {/* Player Area (Bottom) */}
       <div className="mb-6">
         <BoardField
-          cards={[]}
+          lanes={match?.playerOne.lanes}
           owner="player"
           totalPower={match?.playerOne.totalPower ?? 0}
+          selectableLanes={!!pendingCard}
+          onLaneClick={handleLaneSelect}
         />
       </div>
 
       {/* Player Hand */}
       <div className="mb-6">
         <Hand
-          cards={
-            match?.playerOne.hand.map((item) => ({
-              ...item,
-              onCardClick: handleCardPlay,
-            })) ?? []
-          }
+          cards={match?.playerOne.hand ?? []}
+          onCardClick={handleCardPlay}
         />
       </div>
 

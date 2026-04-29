@@ -39,6 +39,8 @@ export async function playCard(
     `https://localhost:7197/matches/${matchId}/players/${playerId}/playCard`,
     {
       method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cardId, laneId, targetId }),
     },
   );
   if (!response.ok) {
