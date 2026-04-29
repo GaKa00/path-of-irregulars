@@ -33,6 +33,7 @@ export default function Hand({
           <p className="text-sm text-slate-500">No cards in hand</p>
         </div>
       ) : (
+   
         <div className="flex gap-8 overflow-x-auto pl-3 py-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
           {cards.map((card) => (
             <div key={card.instanceId} className="shrink-0">

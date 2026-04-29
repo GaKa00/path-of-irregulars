@@ -2,7 +2,7 @@
 
 import { CardInstance } from "@/domains/user/types/card.types";
 import type { LaneStateDto } from "@/domains/user/types/match.types";
-import GameCardView from "./gamecardview";
+import GameCardView from "./gameCardView";
 
 interface BoardFieldProps {
   lanes?: LaneStateDto[];
@@ -26,6 +26,15 @@ export default function BoardField({
   const displayPower = totalPower ?? 0;
   const laneCount = lanes?.length ?? 3;
 
+
+  // if (!lanes) {
+  //   return (
+  //     <div className="panel w-full p-4">
+  //       <div className="text-sm text-slate-500">Loading board...</div>
+  //     </div>
+  //   );
+  // }
+
   return (
     <div className="panel w-full p-4">
       {/* Field Header */}
@@ -41,7 +50,7 @@ export default function BoardField({
         </div>
       </div>
 
-      {/* Three Lanes */}
+      
       <div className="grid grid-cols-3 gap-4">
         {Array.from({ length: laneCount }).map((_, laneIndex) => {
           const lane = lanes?.[laneIndex];

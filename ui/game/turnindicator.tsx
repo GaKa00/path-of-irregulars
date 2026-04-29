@@ -1,38 +1,28 @@
 'use client'
 
+import { useGameStore } from "@/stores/game.store"
+
 interface TurnIndicatorProps {
-  currentPlayer: 'player' | 'opponent'
-  playerName?: string
-  opponentName?: string
   turnNumber?: number
-  isWaiting?: boolean
+
 }
 
 export default function TurnIndicator({
-  currentPlayer,
-  playerName = 'You',
-  opponentName = 'Opponent',
   turnNumber,
-  isWaiting = false
 }: TurnIndicatorProps) {
-  const isPlayerTurn = currentPlayer === 'player'
-  const displayName = isPlayerTurn ? playerName : opponentName
+  const match = useGameStore((s) => s.match);
+  const displayName = match?.activePlayer;
+
 
   return (
     <div className="panel-accent flex items-center justify-center gap-3 p-4">
       {/* Turn Indicator */}
       <div className="flex items-center gap-2">
-        <div
-          className={`h-3 w-3 rounded-full ${
-            isPlayerTurn
-              ? 'bg-emerald-500 animate-pulse'
-              : 'bg-slate-500'
-          }`}
-        />
+        <div className={`h-3 w-3 rounded-full bg-emerald-500 animate-pulse`}/>
         <span className="text-sm font-medium text-slate-200">
-          {isWaiting ? 'Waiting for' : "It's"}{' '}
-          <span className={isPlayerTurn ? 'text-emerald-300' : 'text-slate-300'}>
-            {displayName}'s
+           {"It's"}{' '}
+          <span className= 'text-emerald-300' >
+            {displayName}&apos;s
           </span>{' '}
           turn
         </span>

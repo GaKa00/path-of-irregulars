@@ -1,7 +1,6 @@
 "use client";
 
 import { CardInstance } from "@/domains/user/types/card.types";
-import type { GameCard } from "@/domains/user/types/game.types";
 
 type GameCardViewProps = {
   card: CardInstance;
@@ -22,9 +21,13 @@ export default function GameCardView({
 }: GameCardViewProps) {
   const { definition, power, isDestroyed, isUntargetable } = card;
   const hasPower = !!power && power !== 0;
-  const hasDescription = !!definition.description;
+  const hasDescription = definition?.description;
 
   const baseSize = sizeClasses[size];
+
+  if (!definition) {
+    return null; // Or render a placeholder
+  }
 
   return (
     <button

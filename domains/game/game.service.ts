@@ -35,17 +35,20 @@ export async function playCard(
   laneId?: string | null,
   targetId?: string | null,
 ): Promise<MatchDto> {
-  const response = await fetch(
-    `https://localhost:7197/matches/${matchId}/players/${playerId}/playCard`,
-    {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cardId, laneId, targetId }),
-    },
-  );
+  const params = new URLSearchParams({ cardId });
+  if (laneId) params.append("laneId", laneId);
+  if (targetId) params.append("targetId", targetId);
+
+  const url = `https://localhost:7197/matches/${matchId}/players/${playerId}/playCard?${params}`;
+  console.log("playCard request:", url);
+
+  const response = await fetch(url, {
+    method: "PUT",
+  });
   if (!response.ok) {
+    const errorText = await response.text();
     throw new Error(
-      `Failed to play card: ${response.status} ${response.statusText}`,
+      `Failed to play card: ${response.status} ${response.statusText} - ${errorText}`,
     );
   }
   return (await response.json()) as MatchDto;

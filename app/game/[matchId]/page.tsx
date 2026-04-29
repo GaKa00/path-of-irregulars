@@ -20,7 +20,7 @@ export default function GameByMatchPage({ params }: GameRouteParams) {
   const match = useGameStore((s) => s.match);
   const setMatchDto = useGameStore((s) => s.setMatchDto);
 
-  // Debug: confirm the route param + store hydration timing
+
   useEffect(() => {
     console.log("[GameByMatchPage] matchId:", matchId, "store.matchId:", match?.matchId);
   }, [matchId, match?.matchId]);
@@ -28,7 +28,7 @@ export default function GameByMatchPage({ params }: GameRouteParams) {
   useEffect(() => {
     if (!matchId) return;
 
-    // If zustand already has the right match, don't refetch.
+  
     if (match?.matchId === matchId) return;
 
     console.log("[GameByMatchPage] Fetching match:", matchId);
