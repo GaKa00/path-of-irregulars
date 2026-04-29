@@ -69,6 +69,7 @@ export async function endTurn(
       `Failed to end turn: ${response.status} ${response.statusText}`,
     );
   }
+  console.log("Turn ended successfully for playerId:", playerId);
   return (await response.json()) as MatchDto;
 }
 

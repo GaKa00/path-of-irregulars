@@ -60,7 +60,7 @@ const currentPlayer = match?.activePlayer ?? "";
   };
 
   const handleCardPlay = (card: CardInstance) => {
-    console.log("Card clicked:", card.definition.name, "Current Player:", currentPlayer, "Player Name:", playerName);
+
     if (currentPlayer !==  playerName) {
       alert("Not your turn");
       return;
@@ -77,15 +77,6 @@ const currentPlayer = match?.activePlayer ?? "";
       });
       return;
     }
-
-    console.log("Playing card:", {
-      matchId: match.matchId,
-      playerId,
-      cardId: pendingCard.definition.id, 
-      laneId: laneIndex.toString(),
-    });
-
-    
 
     try {
       const updatedMatch = await playCard(
