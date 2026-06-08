@@ -1,6 +1,7 @@
 
+import { AuthUser } from '@/domains/user/types/User'
 import { create } from 'zustand'
-import { AuthUser } from '@/domains/user/types/AuthUser'
+
 
 
 

@@ -11,7 +11,7 @@ import GameInfo from "@/ui/game/gameinfo";
 import MulliganPhase from "@/ui/game/mulliganphase";
 import { GameCard } from "@/domains/user/types/game.types";
 import { useGameStore } from "@/stores/game.store";
-import { passTurn } from "@/domains/game/game.service";
+import { endTurn, passTurn, playCard } from "@/domains/game/game.service";
 import { useAuthStore } from "@/stores/auth.store";
 import { CardInstance } from "@/domains/user/types/card.types";
 
@@ -20,21 +20,26 @@ export default function GamePage() {
   const [selectedMulliganCards, setSelectedMulliganCards] = useState<string[]>(
     [],
   );
-  const [currentPlayer, setCurrentPlayer] = useState<"player" | "opponent">(
-    "player",
-  );
+
+
   const [roundNumber] = useState(1);
+  const [pendingCard, setPendingCard] = useState<CardInstance | null>(null);
 
   const match = useGameStore((s) => s.match);
+  const setMatchDto = useGameStore((s) => s.setMatchDto);
   const opponentHandSize = match?.playerTwo.handSize;
   const playerHandSize = match?.playerOne.handSize;
   const playerDeckSize = match?.playerOne.deckSize;
   const opponentTotalPower = match?.playerTwo.totalPower;
   const opponentWonRounds = match?.playerTwo.wonRounds;
   const playerWonRounds = match?.playerOne.wonRounds;
-  const playerLanes = match?.playerOne.lanes;
+
+
 
   const playerId = useAuthStore((s) => s.user?.accountId);
+  const playerName = useAuthStore((s) => s.user?.username);
+const currentPlayer = match?.activePlayer ?? "";
+  console.log("GamePage Render - matchId:", match?.matchId, "playerId:", playerId, "playerName:", playerName);
 
   const handleMulliganCardToggle = (card: GameCard) => {
     setSelectedMulliganCards((prev) => {
@@ -42,7 +47,7 @@ export default function GamePage() {
         return prev.filter((id) => id !== card.id);
       }
       if (prev.length < 3) {
-        return [...prev, card.id];
+        return [...prev, card.id];  
       }
       return prev;
     });
@@ -55,22 +60,54 @@ export default function GamePage() {
   };
 
   const handleCardPlay = (card: CardInstance) => {
-    // TODO: Call backend playcard endpoint
-    console.log("Playing card:", card);
+
+    if (currentPlayer !==  playerName) {
+      alert("Not your turn");
+      return;
+    }
+    setPendingCard(card);
+  };
+
+  const handleLaneSelect = async (laneIndex: number) => {
+    if (!pendingCard || !match?.matchId || !playerId) {
+      console.error("Missing required data:", {
+        pendingCard: !!pendingCard,
+        matchId: match?.matchId,
+        playerId,
+      });
+      return;
+    }
+
+    try {
+      const updatedMatch = await playCard(
+        match.matchId,
+        playerId,
+        pendingCard.definition.id, 
+        laneIndex.toString(),
+        null,
+      );
+      setMatchDto(updatedMatch);
+      console.log("Card played successfully:", pendingCard.definition.name);
+    } catch (err) {
+      console.error("Failed to play card:", err);
+    } finally {
+      setPendingCard(null);
+      endTurn(match.matchId, playerId);
+    }
   };
 
   const handlePass = () => {
-    if (currentPlayer === "player") {
+    if (currentPlayer === playerName) {
       passTurn(match?.matchId ?? "", playerId ?? 0);
     } else {
       alert("Not your turn");
     }
-    setCurrentPlayer(currentPlayer === "player" ? "opponent" : "player");
+
   };
 
   return (
     <GameBoard>
-      {/* Mulligan Phase Overlay */}
+     
       {isMulliganActive && (
         <MulliganPhase
           startingHand={[]}
@@ -90,13 +127,13 @@ export default function GamePage() {
           </div>
         </div>
         <BoardField
-          cards={[]}
+          lanes={match?.playerTwo.lanes}
           owner="opponent"
           totalPower={opponentTotalPower ?? 0}
         />
       </div>
 
-      {/* Center Game Info Area */}
+   
       <div className="mb-6 grid gap-4 md:grid-cols-3">
         <div className="md:col-span-2">
           <RoundScore
@@ -117,41 +154,35 @@ export default function GamePage() {
         </div>
       </div>
 
-      {/* Turn Indicator */}
+   
       <div className="mb-6">
         <TurnIndicator
-          currentPlayer={currentPlayer}
-          playerName="You"
-          opponentName="Opponent"
           turnNumber={1}
-          isWaiting={currentPlayer !== "player"}
         />
       </div>
 
-      {/* Player Area (Bottom) */}
       <div className="mb-6">
         <BoardField
-          cards={[]}
+          lanes={match?.playerOne.lanes}
           owner="player"
           totalPower={match?.playerOne.totalPower ?? 0}
+          selectableLanes={!!pendingCard}
+          onLaneClick={handleLaneSelect}
         />
       </div>
 
       {/* Player Hand */}
       <div className="mb-6">
         <Hand
-          cards={
-            match?.playerOne.hand.map((item) => ({
-              ...item,
-            })) ?? []
-          }
+          cards={match?.playerOne.hand ?? []}
+          onCardClick={handleCardPlay}
         />
       </div>
 
-      {/* Action Buttons */}
+   
       <div className="flex justify-center">
         <PassButton
-          isPlayerTurn={currentPlayer === "player"}
+          isPlayerTurn={currentPlayer === playerName}
           onClick={handlePass}
           disabled={false}
         />
