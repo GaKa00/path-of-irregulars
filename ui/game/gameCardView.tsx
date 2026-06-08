@@ -22,6 +22,7 @@ export default function GameCardView({
   const { definition, power, isDestroyed, isUntargetable } = card;
   const hasPower = !!power && power !== 0;
   const hasDescription = definition?.description;
+  const isDisabled = isDestroyed || !onClick;
 
   const baseSize = sizeClasses[size];
 
@@ -32,7 +33,8 @@ export default function GameCardView({
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={isDisabled ? undefined : onClick}
+      disabled={isDisabled}
       className={`
         group flex flex-col rounded-2xl border
         bg-linear-to-b from-slate-900 to-slate-950 shadow-lg

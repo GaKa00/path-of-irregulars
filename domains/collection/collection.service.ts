@@ -1,8 +1,9 @@
 import { CardLibrary } from "../user/types/collection.types";
 import type { Card } from "../user/types/collection.types";
+import { API_BASE_URL } from "@/config/api";
 
 export async function getAllCards(): Promise<CardLibrary> {
-  const response = await fetch("https://localhost:7197/cards");
+  const response = await fetch(`${API_BASE_URL}/cards`);
   if (!response.ok) {
     throw new Error(
       `Failed to fetch cards: ${response.status} ${response.statusText}`,
@@ -14,7 +15,7 @@ export async function getAllCards(): Promise<CardLibrary> {
 }
 
 export async function getCardById(id: string): Promise<Card> {
-  const response = await fetch(`https://localhost:7197/cards/${id}`);
+  const response = await fetch(`${API_BASE_URL}/cards/${id}`);
   if (!response.ok) {
     throw new Error(
       `Failed to fetch card: ${response.status} ${response.statusText}`,

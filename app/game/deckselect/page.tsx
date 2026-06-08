@@ -52,10 +52,16 @@ export default function DeckSelectPage() {
   const { user } = useAuthStore();
 
   useEffect(() => {
+    console.log("DeckSelectPage useEffect user accountId:", user?.accountId);
     if (user?.accountId) {
       getUserDecks()
-        .then(setDecks)
-        .catch((err) => console.error(err));
+        .then((fetchedDecks) => {
+          console.log("Fetched decks:", fetchedDecks);
+          setDecks(fetchedDecks);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch user decks:", err);
+        });
     }
   }, [user?.accountId]);
 

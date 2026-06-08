@@ -25,6 +25,13 @@ export default function BoardField({
 }: BoardFieldProps) {
   const displayPower = totalPower ?? 0;
   const laneCount = lanes?.length ?? 3;
+  console.log("BoardField render", {
+    owner,
+    selectableLanes,
+    laneCount,
+    lanes,
+    totalPower,
+  });
 
 
   // if (!lanes) {
@@ -36,7 +43,11 @@ export default function BoardField({
   // }
 
   return (
-    <div className="panel w-full p-4">
+    <div className={`panel w-full p-4 transition-all ${
+      selectableLanes
+        ? "ring-2 ring-emerald-500/30 bg-slate-900/75 shadow-inner shadow-emerald-500/10"
+        : "bg-slate-900/30"
+    }`}>
       {/* Field Header */}
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-100 capitalize">
